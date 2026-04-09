@@ -4,6 +4,7 @@ import sys
 from settings import *
 from button import Button
 import game
+from credits import show_credits
 
 # Inicjalizacja Pygame
 pygame.init()
@@ -106,7 +107,7 @@ def main_menu():
             if btn_options.handle_event(event):
                 print("Otwieranie Menu Opcji (KAN-42)")
             if btn_credits.handle_event(event):
-                print("Otwieranie ekranu Twórców (KAN-45)")
+                show_credits(screen, clock)
             if btn_exit.handle_event(event):
                 pygame.quit()
                 sys.exit()

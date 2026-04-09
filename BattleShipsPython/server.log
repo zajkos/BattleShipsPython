@@ -35,3 +35,40 @@
 2026-04-09 18:12:57,655 [INFO] Gracz 'sd' (ID: 2) wszedł do gry.
 2026-04-09 18:12:57,655 [INFO] Gracz sd stworzył pokój: C870W
 2026-04-09 18:13:00,921 [INFO] Zamykanie połączenia: sd (2).
+2026-04-09 19:42:44,009 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-09 19:42:44,204 [ERROR] Nie można połączyć z bazą danych: connection to server at "localhost" (::1), port 5432 failed: fe_sendauth: no password supplied
+
+2026-04-09 19:42:44,205 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-04-09 19:50:49,655 [CRITICAL] Błąd startu serwera: [WinError 10013] Została podjęta próba uzyskania dostępu do gniazda w sposób zabroniony przez
+przypisane do niego uprawnienia dostępu
+2026-04-09 19:50:54,214 [CRITICAL] Błąd startu serwera: [WinError 10013] Została podjęta próba uzyskania dostępu do gniazda w sposób zabroniony przez
+przypisane do niego uprawnienia dostępu
+2026-04-09 19:51:44,401 [CRITICAL] Błąd startu serwera: [WinError 10013] Została podjęta próba uzyskania dostępu do gniazda w sposób zabroniony przez
+przypisane do niego uprawnienia dostępu
+2026-04-09 19:56:20,138 [CRITICAL] Błąd startu serwera: [WinError 10013] Została podjęta próba uzyskania dostępu do gniazda w sposób zabroniony przez
+przypisane do niego uprawnienia dostępu
+2026-04-09 20:01:56,566 [INFO] Serwer uruchomiony (Port: 5556).
+2026-04-09 20:02:00,647 [ERROR] Nie można połączyć z bazą danych: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-04-09 20:02:00,648 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-04-09 20:03:35,638 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-09 20:03:39,702 [ERROR] Nie można połączyć z bazą danych: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-04-09 20:03:39,703 [ERROR] Błąd gracza Nieznajomy_0 (0): 'utf-8' codec can't decode byte 0xd2 in position 5: invalid continuation byte
+2026-04-09 20:03:39,703 [INFO] Zamykanie połączenia: Nieznajomy_0 (0).
+2026-04-09 20:03:57,770 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-09 20:04:01,829 [ERROR] Nie można połączyć z bazą danych: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-04-09 20:04:01,830 [ERROR] Błąd gracza Nieznajomy_1 (1): 'utf-8' codec can't decode byte 0xd2 in position 5: invalid continuation byte
+2026-04-09 20:04:01,830 [INFO] Zamykanie połączenia: Nieznajomy_1 (1).
+2026-04-09 20:05:45,288 [CRITICAL] Błąd startu serwera: [WinError 10013] Została podjęta próba uzyskania dostępu do gniazda w sposób zabroniony przez
+przypisane do niego uprawnienia dostępu
