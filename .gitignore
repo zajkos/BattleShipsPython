@@ -1,0 +1,9 @@
+# Pliki systemowe i konfiguracyjne środowiska
+.idea/
+.vscode/
+__pycache__/
+*.pyc
+
+# Wirtualne środowisko
+venv/
+env/
