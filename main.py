@@ -5,7 +5,7 @@ from settings import *
 from button import Button
 import game
 from credits import show_credits
-
+from options import show_options
 # Inicjalizacja Pygame
 pygame.init()
 
@@ -109,7 +109,7 @@ def main_menu():
             if btn_scores.handle_event(event):
                 print("Otwieranie Top Wyników (KAN-49)")
             if btn_options.handle_event(event):
-                print("Otwieranie Menu Opcji (KAN-42)")
+                show_options(screen, clock)
             if btn_credits.handle_event(event):
                 show_credits(screen, clock)
             if btn_exit.handle_event(event):

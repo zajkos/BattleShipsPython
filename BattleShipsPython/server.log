@@ -379,3 +379,21 @@ przypisane do niego uprawnienia dostępu
 2026-04-23 13:00:43,599 [INFO] Zamykanie połączenia: wfa (0).
 2026-04-23 13:02:35,996 [INFO] Serwer uruchomiony (Port: 5555).
 2026-04-23 13:02:36,116 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-24 11:08:49,122 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-24 11:08:49,195 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-24 11:08:59,373 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-24 11:09:38,072 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-24 11:09:49,527 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-24 11:09:55,871 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-24 11:09:55,910 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-24 11:10:09,311 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-24 11:10:09,427 [INFO] Gracz '123' (ID: 0) wszedł do gry.
+2026-04-24 11:10:09,427 [INFO] Gracz 123 szuka losowej gry...
+2026-04-24 11:10:33,673 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-24 11:10:33,711 [INFO] Gracz '321' (ID: 1) wszedł do gry.
+2026-04-24 11:10:33,711 [INFO] Matchmaking: 123 vs 321 (Pokój: FDRF9)
+2026-04-24 11:10:42,615 [INFO] Gracz 321 w pokoju FDRF9 jest gotowy.
+2026-04-24 11:10:52,572 [INFO] Gracz 123 w pokoju FDRF9 jest gotowy.
+2026-04-24 11:10:52,573 [INFO] Pokój FDRF9: Obaj gracze gotowi. Start bitwy!
+2026-04-24 11:19:51,353 [INFO] Zamykanie połączenia: 321 (1).
+2026-04-24 11:19:52,485 [INFO] Zamykanie połączenia: 123 (0).
