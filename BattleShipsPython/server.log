@@ -1,0 +1,514 @@
+2026-04-09 17:54:15,401 [INFO] Serwer uruchomiony. Nasłuchiwanie na porcie 5555...
+2026-04-09 17:54:15,449 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-09 17:54:26,160 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-09 17:54:26,199 [INFO] Próba dołączenia gracza: witam
+2026-04-09 17:54:26,211 [INFO] Nowy gracz witam. Rejestracja w bazie...
+2026-04-09 17:54:52,112 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-09 17:54:52,112 [INFO] Matchmaking: Dwóch graczy połączonych. Można startować grę.
+2026-04-09 17:54:52,159 [INFO] Próba dołączenia gracza: czesc
+2026-04-09 17:54:52,163 [INFO] Nowy gracz czesc. Rejestracja w bazie...
+2026-04-09 17:57:09,857 [INFO] Zamykanie połączenia dla gracza witam (0).
+2026-04-09 17:57:09,860 [INFO] Zamykanie połączenia dla gracza czesc (1).
+2026-04-09 17:57:09,867 [INFO] Powiadamianie przeciwnika (1) o ucieczce gracza.
+2026-04-09 17:57:09,868 [INFO] Powiadamianie przeciwnika (0) o ucieczce gracza.
+2026-04-09 17:58:46,659 [INFO] Serwer uruchomiony. Nasłuchiwanie na porcie 5555...
+2026-04-09 17:58:46,705 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-09 17:59:16,863 [INFO] Serwer uruchomiony. Nasłuchiwanie na porcie 5555...
+2026-04-09 17:59:16,908 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-09 17:59:56,998 [INFO] Serwer uruchomiony. Nasłuchiwanie na porcie 5555...
+2026-04-09 17:59:57,157 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-09 18:00:04,309 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-09 18:00:04,348 [INFO] Gracz 'wer' wszedł do poczekalni (ID sesji: 0).
+2026-04-09 18:00:06,337 [INFO] Zamykanie połączenia dla gracza wer (0).
+2026-04-09 18:02:18,605 [INFO] Serwer uruchomiony. Nasłuchiwanie na porcie 5555...
+2026-04-09 18:02:18,651 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-09 18:12:32,327 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-09 18:12:32,475 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-09 18:12:47,325 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-09 18:12:47,364 [INFO] Gracz 'Jaj' (ID: 0) wszedł do gry.
+2026-04-09 18:12:50,540 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-09 18:12:50,578 [INFO] Zamykanie połączenia: Jaj (0).
+2026-04-09 18:12:50,578 [INFO] Gracz 'gh' (ID: 1) wszedł do gry.
+2026-04-09 18:12:50,579 [INFO] Gracz gh szuka losowej gry...
+2026-04-09 18:12:57,616 [INFO] Gracz 2 połączył się z serwerem.
+2026-04-09 18:12:57,655 [INFO] Zamykanie połączenia: gh (1).
+2026-04-09 18:12:57,655 [INFO] Gracz 'sd' (ID: 2) wszedł do gry.
+2026-04-09 18:12:57,655 [INFO] Gracz sd stworzył pokój: C870W
+2026-04-09 18:13:00,921 [INFO] Zamykanie połączenia: sd (2).
+2026-04-09 19:42:44,009 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-09 19:42:44,204 [ERROR] Nie można połączyć z bazą danych: connection to server at "localhost" (::1), port 5432 failed: fe_sendauth: no password supplied
+
+2026-04-09 19:42:44,205 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-04-09 19:50:49,655 [CRITICAL] Błąd startu serwera: [WinError 10013] Została podjęta próba uzyskania dostępu do gniazda w sposób zabroniony przez
+przypisane do niego uprawnienia dostępu
+2026-04-09 19:50:54,214 [CRITICAL] Błąd startu serwera: [WinError 10013] Została podjęta próba uzyskania dostępu do gniazda w sposób zabroniony przez
+przypisane do niego uprawnienia dostępu
+2026-04-09 19:51:44,401 [CRITICAL] Błąd startu serwera: [WinError 10013] Została podjęta próba uzyskania dostępu do gniazda w sposób zabroniony przez
+przypisane do niego uprawnienia dostępu
+2026-04-09 19:56:20,138 [CRITICAL] Błąd startu serwera: [WinError 10013] Została podjęta próba uzyskania dostępu do gniazda w sposób zabroniony przez
+przypisane do niego uprawnienia dostępu
+2026-04-09 20:01:56,566 [INFO] Serwer uruchomiony (Port: 5556).
+2026-04-09 20:02:00,647 [ERROR] Nie można połączyć z bazą danych: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-04-09 20:02:00,648 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-04-09 20:03:35,638 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-09 20:03:39,702 [ERROR] Nie można połączyć z bazą danych: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-04-09 20:03:39,703 [ERROR] Błąd gracza Nieznajomy_0 (0): 'utf-8' codec can't decode byte 0xd2 in position 5: invalid continuation byte
+2026-04-09 20:03:39,703 [INFO] Zamykanie połączenia: Nieznajomy_0 (0).
+2026-04-09 20:03:57,770 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-09 20:04:01,829 [ERROR] Nie można połączyć z bazą danych: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+2026-04-09 20:04:01,830 [ERROR] Błąd gracza Nieznajomy_1 (1): 'utf-8' codec can't decode byte 0xd2 in position 5: invalid continuation byte
+2026-04-09 20:04:01,830 [INFO] Zamykanie połączenia: Nieznajomy_1 (1).
+2026-04-09 20:05:45,288 [CRITICAL] Błąd startu serwera: [WinError 10013] Została podjęta próba uzyskania dostępu do gniazda w sposób zabroniony przez
+przypisane do niego uprawnienia dostępu
+2026-04-11 11:01:24,176 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-11 11:01:24,999 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:01:24,999 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-04-11 11:01:32,189 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-11 11:01:32,231 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:01:32,232 [INFO] Gracz 'x' (ID: 0) wszedł do gry.
+2026-04-11 11:01:32,232 [INFO] Gracz x stworzył pokój: 8NRV6
+2026-04-11 11:01:39,569 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-11 11:01:39,609 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:01:39,610 [INFO] Zamykanie połączenia: x (0).
+2026-04-11 11:01:39,610 [INFO] Gracz 'x' (ID: 1) wszedł do gry.
+2026-04-11 11:01:39,611 [INFO] Gracz x szuka losowej gry...
+2026-04-11 11:02:08,172 [INFO] Gracz 2 połączył się z serwerem.
+2026-04-11 11:02:08,218 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:02:08,219 [INFO] Zamykanie połączenia: x (1).
+2026-04-11 11:02:08,219 [INFO] Gracz 'x' (ID: 2) wszedł do gry.
+2026-04-11 11:02:08,220 [INFO] Gracz x stworzył pokój: KC674
+2026-04-11 11:07:08,444 [ERROR] Błąd gracza x (2): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:07:08,444 [INFO] Zamykanie połączenia: x (2).
+2026-04-11 11:07:34,630 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-11 11:07:42,341 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-11 11:07:48,587 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-11 11:08:43,748 [INFO] Gracz 3 połączył się z serwerem.
+2026-04-11 11:08:43,800 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:08:43,801 [INFO] Gracz 'x' (ID: 3) wszedł do gry.
+2026-04-11 11:08:43,801 [INFO] Gracz x szuka losowej gry...
+2026-04-11 11:08:50,027 [INFO] Gracz 4 połączył się z serwerem.
+2026-04-11 11:08:50,079 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:08:50,080 [INFO] Gracz 'cc' (ID: 4) wszedł do gry.
+2026-04-11 11:08:50,081 [INFO] Matchmaking: x vs cc (Pokój: FQ269)
+2026-04-11 11:09:08,281 [INFO] Gracz 5 połączył się z serwerem.
+2026-04-11 11:09:08,326 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:09:08,327 [INFO] Zamykanie połączenia: x (3).
+2026-04-11 11:09:08,327 [INFO] Gracz 'CC' (ID: 5) wszedł do gry.
+2026-04-11 11:09:08,328 [INFO] Gracz CC szuka losowej gry...
+2026-04-11 11:09:17,479 [INFO] Gracz 6 połączył się z serwerem.
+2026-04-11 11:09:17,529 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:09:17,530 [INFO] Zamykanie połączenia: cc (4).
+2026-04-11 11:09:17,530 [INFO] Gracz 'xx' (ID: 6) wszedł do gry.
+2026-04-11 11:09:17,531 [INFO] Matchmaking: CC vs xx (Pokój: ZUEHL)
+2026-04-11 11:11:58,371 [INFO] Gracz 7 połączył się z serwerem.
+2026-04-11 11:11:58,436 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:11:58,437 [INFO] Zamykanie połączenia: CC (5).
+2026-04-11 11:11:58,437 [INFO] Gracz 'x' (ID: 7) wszedł do gry.
+2026-04-11 11:11:58,438 [INFO] Gracz x szuka losowej gry...
+2026-04-11 11:12:03,503 [INFO] Gracz 8 połączył się z serwerem.
+2026-04-11 11:12:03,554 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:12:03,555 [INFO] Zamykanie połączenia: xx (6).
+2026-04-11 11:12:03,556 [INFO] Gracz 'y' (ID: 8) wszedł do gry.
+2026-04-11 11:12:03,556 [INFO] Matchmaking: x vs y (Pokój: YJA84)
+2026-04-11 11:12:04,784 [INFO] Zamykanie połączenia: y (8).
+2026-04-11 11:12:07,545 [ERROR] Błąd gracza x (7): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:12:07,546 [INFO] Zamykanie połączenia: x (7).
+2026-04-11 11:12:13,015 [INFO] Gracz 9 połączył się z serwerem.
+2026-04-11 11:12:13,059 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:12:13,060 [INFO] Gracz 'x' (ID: 9) wszedł do gry.
+2026-04-11 11:12:13,061 [INFO] Gracz x szuka losowej gry...
+2026-04-11 11:12:15,559 [INFO] Zamykanie połączenia: x (9).
+2026-04-11 11:15:30,808 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-11 11:15:39,246 [INFO] Gracz 10 połączył się z serwerem.
+2026-04-11 11:15:39,285 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:15:39,286 [INFO] Gracz 'aa' (ID: 10) wszedł do gry.
+2026-04-11 11:15:39,286 [INFO] Gracz aa szuka losowej gry...
+2026-04-11 11:15:40,776 [INFO] Gracz 11 połączył się z serwerem.
+2026-04-11 11:15:40,814 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:15:40,816 [INFO] Gracz 'dd' (ID: 11) wszedł do gry.
+2026-04-11 11:15:40,816 [INFO] Matchmaking: aa vs dd (Pokój: NPYWD)
+2026-04-11 11:17:00,871 [INFO] Gracz 12 połączył się z serwerem.
+2026-04-11 11:17:00,911 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:17:00,912 [INFO] Zamykanie połączenia: dd (11).
+2026-04-11 11:17:00,913 [INFO] Gracz 'xx' (ID: 12) wszedł do gry.
+2026-04-11 11:17:00,914 [INFO] Gracz xx szuka losowej gry...
+2026-04-11 11:17:04,886 [INFO] Gracz 13 połączył się z serwerem.
+2026-04-11 11:17:04,934 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:17:04,935 [ERROR] Błąd gracza aa (10): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:17:04,935 [INFO] Gracz 'aa' (ID: 13) wszedł do gry.
+2026-04-11 11:17:04,936 [INFO] Zamykanie połączenia: aa (10).
+2026-04-11 11:17:04,937 [INFO] Matchmaking: xx vs aa (Pokój: 7LFM6)
+2026-04-11 11:17:40,817 [INFO] Zamykanie połączenia: aa (13).
+2026-04-11 11:17:42,370 [ERROR] Błąd gracza xx (12): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:17:42,371 [INFO] Zamykanie połączenia: xx (12).
+2026-04-11 11:19:45,340 [INFO] Gracz 14 połączył się z serwerem.
+2026-04-11 11:19:45,384 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:19:45,385 [INFO] Gracz 'aa' (ID: 14) wszedł do gry.
+2026-04-11 11:19:45,385 [INFO] Gracz aa szuka losowej gry...
+2026-04-11 11:19:47,076 [INFO] Gracz 15 połączył się z serwerem.
+2026-04-11 11:19:47,126 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:19:47,127 [INFO] Gracz 'xx' (ID: 15) wszedł do gry.
+2026-04-11 11:19:47,128 [INFO] Matchmaking: aa vs xx (Pokój: 06ABT)
+2026-04-11 11:20:19,114 [INFO] Zamykanie połączenia: xx (15).
+2026-04-11 11:22:18,140 [ERROR] Błąd gracza aa (14): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:22:18,140 [INFO] Zamykanie połączenia: aa (14).
+2026-04-11 11:23:22,938 [INFO] Gracz 16 połączył się z serwerem.
+2026-04-11 11:23:22,987 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:23:22,987 [INFO] Gracz 'd' (ID: 16) wszedł do gry.
+2026-04-11 11:23:22,988 [INFO] Gracz d szuka losowej gry...
+2026-04-11 11:23:24,430 [INFO] Gracz 17 połączył się z serwerem.
+2026-04-11 11:23:24,483 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:23:24,484 [INFO] Gracz 'x' (ID: 17) wszedł do gry.
+2026-04-11 11:23:24,485 [INFO] Matchmaking: d vs x (Pokój: 5604P)
+2026-04-11 11:24:30,770 [INFO] Zamykanie połączenia: x (17).
+2026-04-11 11:24:32,181 [ERROR] Błąd gracza d (16): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:24:32,181 [INFO] Zamykanie połączenia: d (16).
+2026-04-11 11:26:36,177 [INFO] Gracz 18 połączył się z serwerem.
+2026-04-11 11:26:36,341 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:26:36,341 [INFO] Gracz 'f' (ID: 18) wszedł do gry.
+2026-04-11 11:26:36,342 [INFO] Gracz f szuka losowej gry...
+2026-04-11 11:26:39,361 [INFO] Gracz 19 połączył się z serwerem.
+2026-04-11 11:26:39,423 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:26:39,424 [INFO] Gracz 'a' (ID: 19) wszedł do gry.
+2026-04-11 11:26:39,424 [INFO] Matchmaking: f vs a (Pokój: 28F1G)
+2026-04-11 11:27:11,920 [INFO] Zamykanie połączenia: a (19).
+2026-04-11 11:27:13,338 [ERROR] Błąd gracza f (18): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:27:13,339 [INFO] Zamykanie połączenia: f (18).
+2026-04-11 11:28:56,363 [INFO] Gracz 20 połączył się z serwerem.
+2026-04-11 11:28:56,418 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:28:56,419 [INFO] Gracz 's' (ID: 20) wszedł do gry.
+2026-04-11 11:28:56,420 [INFO] Gracz s szuka losowej gry...
+2026-04-11 11:28:57,729 [INFO] Gracz 21 połączył się z serwerem.
+2026-04-11 11:28:57,794 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:28:57,795 [INFO] Gracz 'x' (ID: 21) wszedł do gry.
+2026-04-11 11:28:57,796 [INFO] Matchmaking: s vs x (Pokój: 4J953)
+2026-04-11 11:29:24,015 [INFO] Zamykanie połączenia: x (21).
+2026-04-11 11:29:25,030 [ERROR] Błąd gracza s (20): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:29:25,031 [INFO] Zamykanie połączenia: s (20).
+2026-04-11 11:33:17,989 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-11 11:34:55,295 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-11 11:35:04,521 [INFO] Gracz 22 połączył się z serwerem.
+2026-04-11 11:35:04,579 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:35:04,580 [INFO] Gracz 'w' (ID: 22) wszedł do gry.
+2026-04-11 11:35:04,580 [INFO] Gracz w szuka losowej gry...
+2026-04-11 11:35:07,298 [INFO] Gracz 23 połączył się z serwerem.
+2026-04-11 11:35:07,367 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:35:07,368 [INFO] Gracz 'q' (ID: 23) wszedł do gry.
+2026-04-11 11:35:07,369 [INFO] Matchmaking: w vs q (Pokój: 3JFXG)
+2026-04-11 11:35:27,807 [INFO] Zamykanie połączenia: q (23).
+2026-04-11 11:35:30,974 [ERROR] Błąd gracza w (22): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:35:30,975 [INFO] Zamykanie połączenia: w (22).
+2026-04-11 11:36:38,514 [INFO] Gracz 24 połączył się z serwerem.
+2026-04-11 11:36:38,586 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:36:38,587 [INFO] Gracz 'q' (ID: 24) wszedł do gry.
+2026-04-11 11:36:38,588 [INFO] Gracz q szuka losowej gry...
+2026-04-11 11:36:41,588 [INFO] Gracz 25 połączył się z serwerem.
+2026-04-11 11:36:41,644 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:36:41,645 [INFO] Gracz 'qq' (ID: 25) wszedł do gry.
+2026-04-11 11:36:41,646 [INFO] Matchmaking: q vs qq (Pokój: X2GSX)
+2026-04-11 11:36:48,075 [INFO] Zamykanie połączenia: qq (25).
+2026-04-11 11:36:49,060 [ERROR] Błąd gracza q (24): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:36:49,060 [INFO] Zamykanie połączenia: q (24).
+2026-04-11 11:42:11,861 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-11 11:42:21,139 [INFO] Gracz 26 połączył się z serwerem.
+2026-04-11 11:42:21,217 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:42:21,219 [INFO] Gracz 'w' (ID: 26) wszedł do gry.
+2026-04-11 11:42:21,220 [INFO] Gracz w szuka losowej gry...
+2026-04-11 11:42:22,640 [INFO] Gracz 27 połączył się z serwerem.
+2026-04-11 11:42:22,706 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:42:22,708 [INFO] Gracz 'q' (ID: 27) wszedł do gry.
+2026-04-11 11:42:22,709 [INFO] Matchmaking: w vs q (Pokój: T9PAZ)
+2026-04-11 11:42:46,552 [ERROR] Błąd gracza w (26): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:42:46,553 [INFO] Zamykanie połączenia: w (26).
+2026-04-11 11:43:56,574 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-11 11:44:04,044 [INFO] Gracz 28 połączył się z serwerem.
+2026-04-11 11:44:04,117 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:44:04,119 [INFO] Gracz 's' (ID: 28) wszedł do gry.
+2026-04-11 11:44:04,120 [INFO] Gracz s szuka losowej gry...
+2026-04-11 11:44:08,174 [INFO] Gracz 29 połączył się z serwerem.
+2026-04-11 11:44:08,248 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 11:44:08,250 [INFO] Gracz 'd' (ID: 29) wszedł do gry.
+2026-04-11 11:44:08,251 [INFO] Matchmaking: s vs d (Pokój: U4B53)
+2026-04-11 11:44:40,040 [INFO] Zamykanie połączenia: s (28).
+2026-04-11 11:48:09,816 [INFO] Zamykanie połączenia: d (29).
+2026-04-11 11:48:13,073 [ERROR] Błąd gracza q (27): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-11 11:48:13,074 [INFO] Zamykanie połączenia: q (27).
+2026-04-11 12:00:17,626 [CRITICAL] Błąd startu serwera: [WinError 10048] Tylko jedno użycie każdego adresu gniazda (protokół/adres sieciowy/port) jest normalnie dozwolone
+2026-04-11 12:01:16,535 [INFO] Gracz 30 połączył się z serwerem.
+2026-04-11 12:01:16,623 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 12:01:16,625 [INFO] Gracz 'x' (ID: 30) wszedł do gry.
+2026-04-11 12:01:16,626 [INFO] Gracz x szuka losowej gry...
+2026-04-11 12:01:24,438 [INFO] Gracz 31 połączył się z serwerem.
+2026-04-11 12:01:24,524 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-04-11 12:01:24,526 [INFO] Gracz 'd' (ID: 31) wszedł do gry.
+2026-04-11 12:01:24,527 [INFO] Matchmaking: x vs d (Pokój: 7RV7J)
+2026-04-11 12:19:57,246 [INFO] Zamykanie połączenia: d (31).
+2026-04-11 12:19:58,293 [INFO] Zamykanie połączenia: x (30).
+2026-04-12 23:28:24,654 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-12 23:28:24,743 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 92: invalid start byte
+2026-04-12 23:28:24,743 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-04-12 23:28:47,138 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-12 23:28:47,186 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-12 23:30:39,273 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-12 23:30:39,328 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-12 23:32:37,516 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-12 23:32:37,557 [INFO] Gracz 'test' (ID: 0) wszedł do gry.
+2026-04-12 23:32:37,557 [INFO] Gracz test stworzył pokój: S8DL3
+2026-04-12 23:32:48,699 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-12 23:32:48,838 [INFO] Zamykanie połączenia: test (0).
+2026-04-12 23:32:48,839 [INFO] Gracz 'tedt' (ID: 1) wszedł do gry.
+2026-04-12 23:32:48,839 [INFO] Gracz tedt szuka losowej gry...
+2026-04-12 23:33:05,562 [INFO] Gracz 2 połączył się z serwerem.
+2026-04-12 23:33:05,612 [INFO] Gracz 'test2' (ID: 2) wszedł do gry.
+2026-04-12 23:33:05,612 [INFO] Matchmaking: tedt vs test2 (Pokój: 6K9MF)
+2026-04-12 23:33:56,330 [INFO] Zamykanie połączenia: test2 (2).
+2026-04-12 23:33:58,711 [ERROR] Błąd gracza tedt (1): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-12 23:33:58,711 [INFO] Zamykanie połączenia: tedt (1).
+2026-04-13 09:43:02,253 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-13 09:43:02,323 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-13 10:06:39,569 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-13 10:06:39,799 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-13 10:11:20,187 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-13 10:11:20,300 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-13 10:11:39,448 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-13 10:11:39,538 [INFO] Gracz 'test' (ID: 0) wszedł do gry.
+2026-04-13 10:11:39,538 [INFO] Gracz test szuka losowej gry...
+2026-04-13 10:11:52,282 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-13 10:11:52,375 [INFO] Gracz 'test2' (ID: 1) wszedł do gry.
+2026-04-13 10:11:52,376 [INFO] Matchmaking: test vs test2 (Pokój: ZGWGK)
+2026-04-13 10:12:14,451 [INFO] Zamykanie połączenia: test2 (1).
+2026-04-13 10:12:16,921 [ERROR] Błąd gracza test (0): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-13 10:12:16,922 [INFO] Zamykanie połączenia: test (0).
+2026-04-13 10:19:00,952 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-13 10:19:01,087 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-13 10:19:38,940 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-13 10:19:39,029 [INFO] Gracz 'test' (ID: 0) wszedł do gry.
+2026-04-13 10:19:39,030 [INFO] Gracz test stworzył pokój: 1R309
+2026-04-13 10:19:48,503 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-13 10:19:48,597 [INFO] Zamykanie połączenia: test (0).
+2026-04-13 10:19:48,598 [INFO] Gracz 'test' (ID: 1) wszedł do gry.
+2026-04-13 10:19:48,598 [INFO] Gracz test szuka losowej gry...
+2026-04-13 10:20:00,162 [INFO] Gracz 2 połączył się z serwerem.
+2026-04-13 10:20:00,252 [INFO] Gracz 'test2' (ID: 2) wszedł do gry.
+2026-04-13 10:20:00,253 [INFO] Matchmaking: test vs test2 (Pokój: S8S2C)
+2026-04-13 10:20:25,518 [INFO] Zamykanie połączenia: test2 (2).
+2026-04-13 10:20:27,251 [ERROR] Błąd gracza test (1): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-13 10:20:27,251 [INFO] Zamykanie połączenia: test (1).
+2026-04-23 12:23:04,757 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-23 12:23:06,087 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-23 12:24:01,038 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-23 12:24:01,135 [INFO] Gracz 'dwaf' (ID: 0) wszedł do gry.
+2026-04-23 12:24:01,136 [INFO] Gracz dwaf szuka losowej gry...
+2026-04-23 12:24:29,959 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-23 12:24:30,048 [INFO] Gracz 'etrdyfku' (ID: 1) wszedł do gry.
+2026-04-23 12:24:30,049 [INFO] Matchmaking: dwaf vs etrdyfku (Pokój: UMDJM)
+2026-04-23 12:24:43,846 [INFO] Zamykanie połączenia: dwaf (0).
+2026-04-23 12:24:46,737 [INFO] Zamykanie połączenia: etrdyfku (1).
+2026-04-23 12:28:28,706 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-23 12:28:28,813 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-23 12:32:42,054 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-23 12:32:42,156 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-23 12:32:49,786 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-23 12:32:49,873 [INFO] Gracz 'df' (ID: 0) wszedł do gry.
+2026-04-23 12:32:49,873 [INFO] Gracz df szuka losowej gry...
+2026-04-23 12:32:58,698 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-23 12:32:58,789 [INFO] Gracz 'bes' (ID: 1) wszedł do gry.
+2026-04-23 12:32:58,790 [INFO] Matchmaking: df vs bes (Pokój: ENA5J)
+2026-04-23 12:37:20,767 [INFO] Zamykanie połączenia: df (0).
+2026-04-23 12:37:20,771 [INFO] Zamykanie połączenia: bes (1).
+2026-04-23 12:38:11,574 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-23 12:38:11,681 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-23 12:38:22,733 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-23 12:38:22,924 [INFO] Gracz 'wafegs' (ID: 0) wszedł do gry.
+2026-04-23 12:38:22,925 [INFO] Gracz wafegs szuka losowej gry...
+2026-04-23 12:38:37,478 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-23 12:38:37,577 [INFO] Gracz 'dWFA' (ID: 1) wszedł do gry.
+2026-04-23 12:38:37,577 [INFO] Matchmaking: wafegs vs dWFA (Pokój: 8XEDF)
+2026-04-23 12:38:41,591 [INFO] Gracz dWFA w pokoju 8XEDF jest gotowy.
+2026-04-23 12:40:59,598 [INFO] Zamykanie połączenia: dWFA (1).
+2026-04-23 12:40:59,604 [ERROR] Błąd gracza wafegs (0): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-23 12:40:59,604 [INFO] Zamykanie połączenia: wafegs (0).
+2026-04-23 12:49:16,465 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-23 12:49:16,578 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-23 12:49:31,495 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-23 12:49:31,586 [INFO] Gracz 'dwaf' (ID: 0) wszedł do gry.
+2026-04-23 12:49:31,587 [INFO] Gracz dwaf szuka losowej gry...
+2026-04-23 12:49:36,137 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-23 12:49:36,230 [INFO] Gracz 'faw' (ID: 1) wszedł do gry.
+2026-04-23 12:49:36,231 [INFO] Matchmaking: dwaf vs faw (Pokój: NYD40)
+2026-04-23 12:49:39,324 [INFO] Gracz faw w pokoju NYD40 jest gotowy.
+2026-04-23 12:54:48,771 [INFO] Zamykanie połączenia: faw (1).
+2026-04-23 12:54:48,785 [ERROR] Błąd gracza dwaf (0): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-23 12:54:48,786 [INFO] Zamykanie połączenia: dwaf (0).
+2026-04-23 12:55:07,325 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-23 12:55:07,432 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-23 12:55:20,164 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-23 12:55:20,253 [INFO] Gracz 'daw' (ID: 0) wszedł do gry.
+2026-04-23 12:55:20,253 [INFO] Gracz daw szuka losowej gry...
+2026-04-23 12:55:24,098 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-23 12:55:24,301 [INFO] Gracz 'dwa' (ID: 1) wszedł do gry.
+2026-04-23 12:55:24,302 [INFO] Matchmaking: daw vs dwa (Pokój: WHOCM)
+2026-04-23 12:55:27,199 [INFO] Gracz dwa w pokoju WHOCM jest gotowy.
+2026-04-23 12:56:02,912 [INFO] Zamykanie połączenia: dwa (1).
+2026-04-23 12:56:02,913 [ERROR] Błąd gracza daw (0): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-04-23 12:56:02,914 [INFO] Zamykanie połączenia: daw (0).
+2026-04-23 12:59:02,278 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-23 12:59:02,488 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-04-23 12:59:08,119 [INFO] Gracz 0 połączył się z serwerem.
+2026-04-23 12:59:08,212 [INFO] Gracz 'wfa' (ID: 0) wszedł do gry.
+2026-04-23 12:59:08,213 [INFO] Gracz wfa szuka losowej gry...
+2026-04-23 12:59:12,101 [INFO] Gracz 1 połączył się z serwerem.
+2026-04-23 12:59:12,189 [INFO] Gracz 'w34yr' (ID: 1) wszedł do gry.
+2026-04-23 12:59:12,189 [INFO] Matchmaking: wfa vs w34yr (Pokój: IRQHA)
+2026-04-23 12:59:14,578 [INFO] Gracz w34yr w pokoju IRQHA jest gotowy.
+2026-04-23 12:59:17,949 [INFO] Gracz wfa w pokoju IRQHA jest gotowy.
+2026-04-23 12:59:17,949 [INFO] Pokój IRQHA: Obaj gracze gotowi. Start bitwy!
+2026-04-23 13:00:42,772 [INFO] Zamykanie połączenia: w34yr (1).
+2026-04-23 13:00:43,599 [INFO] Zamykanie połączenia: wfa (0).
+2026-04-23 13:02:35,996 [INFO] Serwer uruchomiony (Port: 5555).
+2026-04-23 13:02:36,116 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-09 23:13:56,694 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-09 23:13:56,830 [ERROR] Nie można połączyć z bazą danych: connection to server at "localhost" (127.0.0.1), port 5432 failed: fe_sendauth: no password supplied
+
+2026-05-09 23:13:56,830 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-05-09 23:15:31,516 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-09 23:15:31,554 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-05-09 23:15:31,554 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-05-09 23:15:57,214 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-09 23:15:57,249 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-05-09 23:15:57,250 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-05-09 23:18:03,617 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-09 23:18:03,654 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-05-09 23:18:03,654 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-05-09 23:21:53,752 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-09 23:21:53,788 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-05-09 23:21:53,788 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-05-09 23:22:05,997 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-09 23:22:06,035 [ERROR] Nie można połączyć z bazą danych: 'utf-8' codec can't decode byte 0xb3 in position 98: invalid start byte
+2026-05-09 23:22:06,035 [WARNING] Brak połączenia z bazą! Opcje bazodanowe będą niedostępne.
+2026-05-09 23:32:10,168 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-09 23:32:10,206 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-09 23:32:29,623 [INFO] Gracz 0 połączył się z serwerem.
+2026-05-09 23:32:29,657 [INFO] Gracz 'x' (ID: 0) wszedł do gry.
+2026-05-09 23:32:29,657 [INFO] Gracz x szuka losowej gry...
+2026-05-09 23:40:47,398 [INFO] Gracz 1 połączył się z serwerem.
+2026-05-09 23:40:47,433 [INFO] Gracz 'y' (ID: 1) wszedł do gry.
+2026-05-09 23:40:47,433 [INFO] Matchmaking: x vs y (Pokój: PF1Z8)
+2026-05-09 23:41:20,998 [INFO] Zamykanie połączenia: y (1).
+2026-05-09 23:41:24,392 [ERROR] Błąd gracza x (0): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-05-09 23:41:24,392 [INFO] Zamykanie połączenia: x (0).
+2026-05-09 23:43:09,686 [INFO] Gracz 2 połączył się z serwerem.
+2026-05-09 23:43:09,720 [INFO] Gracz 'x' (ID: 2) wszedł do gry.
+2026-05-09 23:43:09,720 [INFO] Gracz x szuka losowej gry...
+2026-05-09 23:43:19,049 [INFO] Gracz 3 połączył się z serwerem.
+2026-05-09 23:43:19,085 [INFO] Gracz 'y' (ID: 3) wszedł do gry.
+2026-05-09 23:43:19,085 [INFO] Matchmaking: x vs y (Pokój: CZT51)
+2026-05-09 23:43:52,240 [INFO] Gracz y w pokoju CZT51 jest gotowy.
+2026-05-09 23:43:59,241 [INFO] Gracz x w pokoju CZT51 jest gotowy.
+2026-05-09 23:43:59,241 [INFO] Pokój CZT51: Obaj gracze gotowi. Start bitwy!
+2026-05-09 23:44:47,599 [INFO] Zamykanie połączenia: x (2).
+2026-05-09 23:44:48,305 [INFO] Zamykanie połączenia: y (3).
+2026-05-09 23:50:53,557 [INFO] Gracz 4 połączył się z serwerem.
+2026-05-09 23:50:53,592 [INFO] Gracz 'x' (ID: 4) wszedł do gry.
+2026-05-09 23:50:53,592 [INFO] Gracz x szuka losowej gry...
+2026-05-09 23:50:58,526 [INFO] Gracz 5 połączył się z serwerem.
+2026-05-09 23:50:58,562 [INFO] Gracz 'y' (ID: 5) wszedł do gry.
+2026-05-09 23:50:58,563 [INFO] Matchmaking: x vs y (Pokój: 69Q9R)
+2026-05-09 23:51:02,500 [INFO] Gracz y w pokoju 69Q9R jest gotowy.
+2026-05-09 23:51:05,204 [INFO] Gracz x w pokoju 69Q9R jest gotowy.
+2026-05-09 23:51:05,204 [INFO] Pokój 69Q9R: Obaj gracze gotowi. Start bitwy!
+2026-05-09 23:54:19,766 [INFO] Zamykanie połączenia: x (4).
+2026-05-09 23:54:20,353 [INFO] Zamykanie połączenia: y (5).
+2026-05-10 00:03:27,696 [INFO] Gracz 6 połączył się z serwerem.
+2026-05-10 00:03:27,731 [INFO] Gracz 'y' (ID: 6) wszedł do gry.
+2026-05-10 00:03:27,731 [INFO] Gracz y szuka losowej gry...
+2026-05-10 00:03:29,362 [INFO] Gracz 7 połączył się z serwerem.
+2026-05-10 00:03:29,404 [INFO] Gracz 'x' (ID: 7) wszedł do gry.
+2026-05-10 00:03:29,404 [INFO] Matchmaking: y vs x (Pokój: FSCB6)
+2026-05-10 00:03:31,800 [INFO] Gracz x w pokoju FSCB6 jest gotowy.
+2026-05-10 00:03:33,876 [INFO] Gracz y w pokoju FSCB6 jest gotowy.
+2026-05-10 00:03:33,876 [INFO] Pokój FSCB6: Obaj gracze gotowi. Start bitwy!
+2026-05-10 00:03:53,445 [INFO] Zamykanie połączenia: y (6).
+2026-05-10 00:03:54,245 [INFO] Zamykanie połączenia: x (7).
+2026-05-10 00:05:39,363 [INFO] Gracz 8 połączył się z serwerem.
+2026-05-10 00:05:39,501 [INFO] Gracz 'x' (ID: 8) wszedł do gry.
+2026-05-10 00:05:39,502 [INFO] Gracz x szuka losowej gry...
+2026-05-10 00:05:44,370 [INFO] Gracz 9 połączył się z serwerem.
+2026-05-10 00:05:44,409 [INFO] Gracz 'z' (ID: 9) wszedł do gry.
+2026-05-10 00:05:44,409 [INFO] Matchmaking: x vs z (Pokój: N4Q2D)
+2026-05-10 00:05:46,583 [INFO] Gracz z w pokoju N4Q2D jest gotowy.
+2026-05-10 00:05:48,982 [INFO] Gracz x w pokoju N4Q2D jest gotowy.
+2026-05-10 00:05:48,982 [INFO] Pokój N4Q2D: Obaj gracze gotowi. Start bitwy!
+2026-05-10 00:06:57,859 [INFO] Zamykanie połączenia: x (8).
+2026-05-10 00:06:58,884 [INFO] Zamykanie połączenia: z (9).
+2026-05-10 00:41:12,414 [INFO] Gracz 10 połączył się z serwerem.
+2026-05-10 00:41:12,549 [INFO] Gracz 'y' (ID: 10) wszedł do gry.
+2026-05-10 00:41:12,550 [INFO] Gracz y szuka losowej gry...
+2026-05-10 00:41:14,630 [INFO] Gracz 11 połączył się z serwerem.
+2026-05-10 00:41:14,664 [INFO] Gracz 'x' (ID: 11) wszedł do gry.
+2026-05-10 00:41:14,664 [INFO] Matchmaking: y vs x (Pokój: 2EB6U)
+2026-05-10 00:41:17,447 [INFO] Gracz x w pokoju 2EB6U jest gotowy.
+2026-05-10 00:41:20,974 [INFO] Gracz y w pokoju 2EB6U jest gotowy.
+2026-05-10 00:41:20,974 [INFO] Pokój 2EB6U: Obaj gracze gotowi. Start bitwy!
+2026-05-10 00:43:20,028 [INFO] Zamykanie połączenia: x (11).
+2026-05-10 00:43:20,535 [INFO] Zamykanie połączenia: y (10).
+2026-05-10 00:49:51,424 [INFO] Gracz 12 połączył się z serwerem.
+2026-05-10 00:49:51,458 [INFO] Gracz 'x' (ID: 12) wszedł do gry.
+2026-05-10 00:49:51,459 [INFO] Gracz x szuka losowej gry...
+2026-05-10 00:49:55,430 [INFO] Gracz 13 połączył się z serwerem.
+2026-05-10 00:49:55,467 [INFO] Gracz 'd' (ID: 13) wszedł do gry.
+2026-05-10 00:49:55,468 [INFO] Matchmaking: x vs d (Pokój: J81Z8)
+2026-05-10 00:49:57,643 [INFO] Gracz d w pokoju J81Z8 jest gotowy.
+2026-05-10 00:49:59,814 [INFO] Gracz x w pokoju J81Z8 jest gotowy.
+2026-05-10 00:49:59,814 [INFO] Pokój J81Z8: Obaj gracze gotowi. Start bitwy!
+2026-05-10 00:55:40,249 [INFO] Zamykanie połączenia: x (12).
+2026-05-10 00:55:41,572 [INFO] Zamykanie połączenia: d (13).
+2026-05-10 00:55:55,528 [INFO] Gracz 14 połączył się z serwerem.
+2026-05-10 00:55:55,561 [INFO] Gracz 'z' (ID: 14) wszedł do gry.
+2026-05-10 00:55:55,561 [INFO] Gracz z szuka losowej gry...
+2026-05-10 00:56:01,563 [INFO] Gracz 15 połączył się z serwerem.
+2026-05-10 00:56:01,597 [INFO] Gracz 'y' (ID: 15) wszedł do gry.
+2026-05-10 00:56:01,597 [INFO] Matchmaking: z vs y (Pokój: 2H4RY)
+2026-05-10 00:56:03,890 [INFO] Gracz y w pokoju 2H4RY jest gotowy.
+2026-05-10 00:56:06,558 [INFO] Gracz z w pokoju 2H4RY jest gotowy.
+2026-05-10 00:56:06,558 [INFO] Pokój 2H4RY: Obaj gracze gotowi. Start bitwy!
+2026-05-10 00:56:49,748 [INFO] Zamykanie połączenia: y (15).
+2026-05-10 00:56:50,316 [INFO] Zamykanie połączenia: z (14).
+2026-05-10 19:28:44,566 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-10 19:28:44,686 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-10 19:29:46,251 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-10 19:29:46,297 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-10 19:32:07,414 [INFO] Gracz 0 połączył się z serwerem.
+2026-05-10 19:32:07,454 [INFO] Gracz 'wd' (ID: 0) wszedł do gry.
+2026-05-10 19:32:07,454 [INFO] Gracz wd szuka losowej gry...
+2026-05-10 19:32:16,878 [INFO] Gracz 1 połączył się z serwerem.
+2026-05-10 19:32:16,925 [INFO] Gracz 'fe' (ID: 1) wszedł do gry.
+2026-05-10 19:32:16,925 [INFO] Matchmaking: wd vs fe (Pokój: PUSIM)
+2026-05-10 19:32:26,075 [INFO] Gracz fe w pokoju PUSIM jest gotowy.
+2026-05-10 19:32:30,425 [INFO] Gracz wd w pokoju PUSIM jest gotowy.
+2026-05-10 19:32:30,426 [INFO] Pokój PUSIM: Obaj gracze gotowi. Start bitwy!
+2026-05-10 19:33:32,183 [INFO] Gracz 2 połączył się z serwerem.
+2026-05-10 19:33:32,228 [INFO] Zamykanie połączenia: wd (0).
+2026-05-10 19:33:32,228 [INFO] Gracz 'sxd' (ID: 2) wszedł do gry.
+2026-05-10 19:33:32,228 [INFO] Gracz sxd szuka losowej gry...
+2026-05-10 19:33:39,314 [INFO] Gracz 3 połączył się z serwerem.
+2026-05-10 19:33:39,362 [INFO] Zamykanie połączenia: fe (1).
+2026-05-10 19:33:39,362 [INFO] Gracz 'ftgy' (ID: 3) wszedł do gry.
+2026-05-10 19:33:39,362 [INFO] Matchmaking: sxd vs ftgy (Pokój: PBEF8)
+2026-05-10 19:33:42,344 [INFO] Gracz ftgy w pokoju PBEF8 jest gotowy.
+2026-05-10 19:33:45,293 [INFO] Gracz sxd w pokoju PBEF8 jest gotowy.
+2026-05-10 19:33:45,293 [INFO] Pokój PBEF8: Obaj gracze gotowi. Start bitwy!
+2026-05-10 19:34:21,514 [INFO] Zamykanie połączenia: ftgy (3).
+2026-05-10 19:34:23,057 [INFO] Zamykanie połączenia: sxd (2).
