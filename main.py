@@ -6,6 +6,7 @@ from button import Button
 import game
 from credits import show_credits
 from options import show_options
+from auth_screen import show_auth_screen
 # Inicjalizacja Pygame
 pygame.init()
 
@@ -66,9 +67,10 @@ def main_menu():
                     sys.exit()
 
             if btn_play.handle_event(event):
-                player_name = game.get_player_name(screen, background_image)
+                # 1. Odpalenie ekranu logowania/rejestracji
+                player_name = show_auth_screen(screen, clock)
+
                 if player_name:
-                    # Wybór trybu z nowego menu
                     match_choice = game.matchmaking_menu(screen, background_image)
                     if match_choice:
                         try:

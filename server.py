@@ -7,7 +7,7 @@ import logging
 import random
 import string
 from dotenv import load_dotenv
-
+import bcrypt
 # --- KONFIGURACJA LOGOWANIA ---
 logging.basicConfig(
     level=logging.INFO,
@@ -106,7 +106,108 @@ def handle_client(conn, player_id):
                     username = request.get("name", username)
                     logging.info(f"Gracz '{username}' (ID: {player_id}) wszedł do gry.")
                     conn.sendall(str.encode(json.dumps({"status": "joined", "message": f"Witaj {username}!"})))
+                elif action == "register":
+                    req_username = request.get("username")
+                    password = request.get("password").encode('utf-8')
+                    # Szyfrowanie hasła
+                    hashed_pw = bcrypt.hashpw(password, bcrypt.gensalt()).decode('utf-8')
 
+                    try:
+                        if not db_conn:
+                            db_conn = get_db_connection()
+                            db_cursor = db_conn.cursor()
+
+                        # Próba dodania użytkownika do bazy
+                        db_cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)",
+                                          (req_username, hashed_pw))
+                        db_conn.commit()
+                        conn.sendall(str.encode(json.dumps({"status": "success", "message": "Zarejestrowano!"})))
+                        logging.info(f"Zarejestrowano nowego gracza: {req_username}")
+
+                    except psycopg2.IntegrityError:
+                        # Błąd unikalności - taki nick już istnieje w bazie!
+                        db_conn.rollback()  # Bardzo ważne, aby zresetować transakcję po błędzie
+                        conn.sendall(str.encode(json.dumps({"status": "error", "message": "Login jest już zajęty!"})))
+                    except Exception as e:
+                        if db_conn: db_conn.rollback()
+                        logging.error(f"Błąd rejestracji gracza {req_username}: {e}")
+                        conn.sendall(str.encode(json.dumps({"status": "error", "message": "Błąd bazy danych."})))
+
+
+                elif action == "login":
+
+                    req_username = request.get("username")
+
+                    password = request.get("password").encode('utf-8')
+
+                    try:
+
+                        # Zabezpieczenie połączenia z bazą
+
+                        if not db_cursor:
+                            db_conn = get_db_connection()
+
+                            db_cursor = db_conn.cursor() if db_conn else None
+
+                        if db_cursor:
+
+                            # Pobieramy user_id (indeks 0) oraz password_hash (indeks 1)
+
+                            db_cursor.execute("SELECT user_id, password_hash FROM users WHERE username = %s",
+                                              (req_username,))
+
+                            result = db_cursor.fetchone()
+
+                            if result:
+
+                                db_user_id = result[0]
+
+                                stored_hash = result[1].encode('utf-8')
+
+                                # Sprawdzanie czy hasła pasują
+
+                                if bcrypt.checkpw(password, stored_hash):
+
+                                    username = req_username  # Aktualizacja nicku gracza w sesji serwera
+
+                                    # ZMIANA: Wysyłamy user_id z powrotem do Pygame!
+
+                                    conn.sendall(str.encode(json.dumps({
+
+                                        "status": "success",
+
+                                        "message": "Zalogowano!",
+
+                                        "user_id": db_user_id
+
+                                    })))
+
+                                    logging.info(f"Gracz '{username}' (DB ID: {db_user_id}) zalogował się pomyślnie.")
+
+                                else:
+
+                                    conn.sendall(
+                                        str.encode(json.dumps({"status": "error", "message": "Błędne hasło!"})))
+
+                            else:
+
+                                conn.sendall(
+                                    str.encode(json.dumps({"status": "error", "message": "Użytkownik nie istnieje!"})))
+
+                        else:
+
+                            conn.sendall(
+                                str.encode(json.dumps({"status": "error", "message": "Brak połączenia z bazą!"})))
+
+
+                    except Exception as e:
+
+                        if db_conn: db_conn.rollback()
+
+                        logging.error(f"Błąd logowania gracza {req_username}: {e}")
+
+                        conn.sendall(
+                            str.encode(json.dumps({"status": "error", "message": "Błąd serwera bazy danych."})))
                 elif action == "create_room":
                     room_code = generate_room_code()
                     rooms[room_code] = create_game_state(conn, username)

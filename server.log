@@ -486,3 +486,26 @@ przypisane do niego uprawnienia dostępu
 2026-05-10 00:56:06,558 [INFO] Pokój 2H4RY: Obaj gracze gotowi. Start bitwy!
 2026-05-10 00:56:49,748 [INFO] Zamykanie połączenia: y (15).
 2026-05-10 00:56:50,316 [INFO] Zamykanie połączenia: z (14).
+2026-05-10 20:52:20,819 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-10 20:52:20,889 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-10 20:58:24,261 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-10 20:58:24,302 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-10 20:58:40,403 [INFO] Gracz 0 połączył się z serwerem.
+2026-05-10 20:59:05,916 [INFO] Zarejestrowano nowego gracza: test
+2026-05-10 20:59:09,298 [INFO] Gracz 'test' (DB ID: 1) zalogował się pomyślnie.
+2026-05-10 20:59:09,298 [INFO] Zamykanie połączenia: test (0).
+2026-05-10 20:59:11,055 [INFO] Gracz 1 połączył się z serwerem.
+2026-05-10 20:59:11,090 [INFO] Gracz 'test' (ID: 1) wszedł do gry.
+2026-05-10 20:59:11,090 [INFO] Gracz test szuka losowej gry...
+2026-05-10 20:59:25,201 [INFO] Gracz 2 połączył się z serwerem.
+2026-05-10 20:59:56,673 [INFO] Zarejestrowano nowego gracza: test1
+2026-05-10 20:59:58,435 [INFO] Gracz 'test1' (DB ID: 3) zalogował się pomyślnie.
+2026-05-10 20:59:58,436 [INFO] Zamykanie połączenia: test1 (2).
+2026-05-10 20:59:59,150 [INFO] Gracz 3 połączył się z serwerem.
+2026-05-10 20:59:59,201 [INFO] Gracz 'test1' (ID: 3) wszedł do gry.
+2026-05-10 20:59:59,202 [INFO] Matchmaking: test vs test1 (Pokój: TBJGE)
+2026-05-10 21:00:05,227 [INFO] Gracz test1 w pokoju TBJGE jest gotowy.
+2026-05-10 21:00:15,252 [INFO] Gracz test w pokoju TBJGE jest gotowy.
+2026-05-10 21:00:15,252 [INFO] Pokój TBJGE: Obaj gracze gotowi. Start bitwy!
+2026-05-10 21:00:49,700 [INFO] Zamykanie połączenia: test (1).
+2026-05-10 21:00:50,557 [INFO] Zamykanie połączenia: test1 (3).
