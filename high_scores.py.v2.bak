@@ -1,0 +1,171 @@
+# high_scores.py
+import pygame
+import sys
+import json
+from settings import *
+from button import Button
+
+def show_high_scores(screen, clock, net):
+    """Ekran wyświetlający listę najlepszych 100 wyników z serwera."""
+    font_title = pygame.font.SysFont("arial", 80, bold=True)
+    font_header = pygame.font.SysFont("arial", 40, bold=True)
+    font_row = pygame.font.SysFont("arial", 30)
+    
+    # Przycisk powrotu
+    btn_back = Button(WIDTH // 2 - 150, HEIGHT - 100, 300, 70, "Wstecz", font_header)
+
+    # Pobieranie danych z serwera
+    loading_surf = font_header.render("Pobieranie wyników...", True, TEXT_COLOR)
+    screen.fill(BG_COLOR)
+    screen.blit(loading_surf, loading_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2)))
+    pygame.display.update()
+
+    response = net.send({"action": "get_high_scores"})
+    scores_data = []
+    if response and response.get("status") == "success":
+        scores_data = response.get("data", [])
+    else:
+        print("Błąd pobierania rankingu lub brak danych.")
+
+    # Parametry listy
+    row_height = 50
+    list_y_start = 250
+    list_height = HEIGHT - 400
+    visible_rows = list_height // row_height
+    scroll_y = 0
+    max_scroll = max(0, len(scores_data) * row_height - list_height)
+
+    # Kolumny
+    cols = [
+        {"name": "Poz", "width": 100, "attr": "rank"},
+        {"name": "Gracz", "width": 400, "attr": "username"},
+        {"name": "Najlepszy Wynik", "width": 300, "attr": "best_score"},
+        {"name": "Wygrane", "width": 200, "attr": "wins"},
+        {"name": "Przegrane", "width": 200, "attr": "losses"},
+        {"name": "Średnia", "width": 200, "attr": "avg_points"}
+    ]
+    
+    total_table_width = sum(c["width"] for c in cols)
+    table_x = (WIDTH - total_table_width) // 2
+
+    # Tło dla tabeli
+    table_surface = pygame.Surface((total_table_width, len(scores_data) * row_height), pygame.SRCALPHA)
+
+    while True:
+        mouse_pos = pygame.mouse.get_pos()
+        screen.fill(BG_COLOR)
+
+        # Rysowanie tła (opcjonalnie z obrazkiem)
+        try:
+            background_image_raw = pygame.image.load(BACKGROUND_IMAGE_FILENAME).convert()
+            background_image = pygame.transform.scale(background_image_raw, (WIDTH, HEIGHT))
+            screen.blit(background_image, (0, 0))
+            overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+            overlay.fill((0, 0, 0, 200))
+            screen.blit(overlay, (0, 0))
+        except:
+            pass
+
+        # Nagłówek
+        title_surf = font_title.render("TOP 100 WYNIKÓW", True, (255, 215, 0))
+        screen.blit(title_surf, title_surf.get_rect(center=(WIDTH // 2, 100)))
+
+        # Nagłówki kolumn
+        curr_x = table_x
+        for col in cols:
+            h_surf = font_header.render(col["name"], True, (200, 200, 200))
+            screen.blit(h_surf, (curr_x + 10, list_y_start - 60))
+            curr_x += col["width"]
+        
+        pygame.draw.line(screen, (100, 100, 100), (table_x, list_y_start - 10), (table_x + total_table_width, list_y_start - 10), 2)
+
+        # Rysowanie wierszy na dedykowanej powierzchni
+        table_surface.fill((0, 0, 0, 0))
+        for i, row in enumerate(scores_data):
+            rank = i + 1
+            y = i * row_height
+            
+            # Kolorowanie w zależności od pozycji
+            color = TEXT_COLOR
+            bg_alpha = 30
+            if rank <= 3:
+                color = (255, 215, 0) # Złoty
+                bg_alpha = 80
+            elif rank <= 10:
+                color = (200, 200, 200) # Srebrny/Jasnoszary
+                bg_alpha = 60
+            elif rank <= 50:
+                color = (200, 150, 100) # Brązowy/Miedziany
+                bg_alpha = 40
+            
+            # Tło wiersza dla lepszej czytelności
+            if i % 2 == 0:
+                pygame.draw.rect(table_surface, (255, 255, 255, bg_alpha), (0, y, total_table_width, row_height))
+
+            # Dane
+            curr_x = 0
+            # Pozycja
+            rank_surf = font_row.render(str(rank), True, color)
+            table_surface.blit(rank_surf, (curr_x + 10, y + 10))
+            curr_x += cols[0]["width"]
+            
+            # Nick
+            name_surf = font_row.render(row["username"], True, color)
+            table_surface.blit(name_surf, (curr_x + 10, y + 10))
+            curr_x += cols[1]["width"]
+
+            # Wynik
+            score_surf = font_row.render(str(row["best_score"]), True, color)
+            table_surface.blit(score_surf, (curr_x + 10, y + 10))
+            curr_x += cols[2]["width"]
+
+            # Wygrane
+            wins_surf = font_row.render(str(row["wins"]), True, (100, 255, 100))
+            table_surface.blit(wins_surf, (curr_x + 10, y + 10))
+            curr_x += cols[3]["width"]
+
+            # Przegrane
+            loss_surf = font_row.render(str(row["losses"]), True, (255, 100, 100))
+            table_surface.blit(loss_surf, (curr_x + 10, y + 10))
+            curr_x += cols[4]["width"]
+
+            # Średnia
+            avg_surf = font_row.render(f"{row['avg_points']:.2f}", True, (150, 200, 255))
+            table_surface.blit(avg_surf, (curr_x + 10, y + 10))
+
+        # Wyświetlanie fragmentu tabeli (scrolling)
+        view_rect = pygame.Rect(0, scroll_y, total_table_width, list_height)
+        screen.blit(table_surface, (table_x, list_y_start), view_rect)
+
+        # Pasek przewijania (opcjonalnie)
+        if max_scroll > 0:
+            scroll_bar_h = (list_height / (len(scores_data) * row_height)) * list_height
+            scroll_bar_y = (scroll_y / max_scroll) * (list_height - scroll_bar_h)
+            pygame.draw.rect(screen, (100, 100, 100), (table_x + total_table_width + 10, list_y_start, 10, list_height))
+            pygame.draw.rect(screen, (200, 200, 200), (table_x + total_table_width + 10, list_y_start + scroll_bar_y, 10, scroll_bar_h))
+
+        # Przyciski i zdarzenia
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
+                if event.key == pygame.K_UP:
+                    scroll_y = max(0, scroll_y - row_height)
+                if event.key == pygame.K_DOWN:
+                    scroll_y = min(max_scroll, scroll_y + row_height)
+
+            if event.type == pygame.MOUSEWHEEL:
+                scroll_y = max(0, min(max_scroll, scroll_y - event.y * row_height))
+
+            if btn_back.handle_event(event):
+                return
+
+        btn_back.check_hover(mouse_pos)
+        btn_back.draw(screen)
+
+        pygame.display.update()
+        clock.tick(FPS)
