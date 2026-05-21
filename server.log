@@ -1018,3 +1018,41 @@ przypisane do niego uprawnienia dostępu
 2026-05-21 21:59:29,733 [INFO] Klient 1 połączył się z serwerem (oczekiwanie na logowanie).
 2026-05-21 21:59:37,501 [INFO] Zamykanie połączenia: Klient 1.
 2026-05-21 21:59:38,495 [INFO] Zamykanie połączenia: Klient 0.
+2026-05-21 22:04:25,281 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-21 22:04:25,320 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-21 22:04:29,001 [INFO] Klient 0 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 22:04:29,003 [INFO] Klient 1 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 22:04:40,035 [INFO] Zamykanie połączenia: Klient 1.
+2026-05-21 22:04:42,660 [INFO] Zamykanie połączenia: Klient 0.
+2026-05-21 22:05:16,227 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-21 22:05:16,267 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-21 22:05:19,949 [INFO] Klient 0 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 22:05:19,963 [INFO] Klient 1 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 22:05:39,657 [INFO] Zamykanie połączenia: Klient 1.
+2026-05-21 22:05:40,709 [INFO] Zamykanie połączenia: Klient 0.
+2026-05-22 12:05:39,879 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-22 12:05:39,945 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-22 12:05:44,501 [INFO] Klient 0 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-22 12:05:44,540 [INFO] Klient 1 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-22 12:06:04,554 [INFO] Gracz 'chujchuj123' (DB ID: 3) zalogował się pomyślnie.
+2026-05-22 12:06:11,348 [INFO] Gracz chujchuj123 szuka losowej gry...
+2026-05-22 12:06:23,448 [INFO] Gracz 'chujchuj321' (DB ID: 104) zalogował się pomyślnie.
+2026-05-22 12:06:24,304 [INFO] Matchmaking: chujchuj123 vs chujchuj321 (Pokój: 4GUWD)
+2026-05-22 12:06:44,460 [INFO] Gracz chujchuj321 w pokoju 4GUWD jest gotowy.
+2026-05-22 12:06:57,322 [INFO] Gracz chujchuj123 w pokoju 4GUWD jest gotowy.
+2026-05-22 12:06:57,323 [INFO] Pokój 4GUWD: Obaj gracze gotowi. Start bitwy!
+2026-05-22 12:08:05,484 [INFO] Zamykanie połączenia: Klient 0.
+2026-05-22 12:08:06,267 [INFO] Zamykanie połączenia: Klient 1.
+2026-05-22 20:50:24,730 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-22 20:50:24,931 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-22 20:50:26,368 [INFO] Klient 0 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-22 20:50:26,414 [INFO] Klient 1 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-22 20:51:43,702 [INFO] Gracz 'chujchuj123' (DB ID: 3) zalogował się pomyślnie.
+2026-05-22 20:51:45,268 [INFO] Gracz chujchuj123 szuka losowej gry...
+2026-05-22 20:51:58,040 [INFO] Gracz 'chujchuj321' (DB ID: 104) zalogował się pomyślnie.
+2026-05-22 20:52:04,549 [INFO] Matchmaking: chujchuj123 vs chujchuj321 (Pokój: FAZY9)
+2026-05-22 20:52:24,442 [INFO] Gracz chujchuj321 w pokoju FAZY9 jest gotowy.
+2026-05-22 20:52:27,990 [INFO] Gracz chujchuj123 w pokoju FAZY9 jest gotowy.
+2026-05-22 20:52:27,991 [INFO] Pokój FAZY9: Obaj gracze gotowi. Start bitwy!
+2026-05-22 20:52:51,578 [INFO] Zamykanie połączenia: Klient 0.
+2026-05-22 20:52:52,460 [INFO] Zamykanie połączenia: Klient 1.

@@ -41,4 +41,19 @@
     - **Globalny Cache Klasy Button**: Zmodyfikowano plik `button.py` – tekst przycisków tekstowych jest teraz renderowany (`font.render()`) tylko raz podczas wywołania `__init__`, eliminując renderowanie go co klatkę wewnątrz metody `draw()`.
     - **Cache Siatki Gry**: W `game.py` wprowadzono technikę zapamiętywania tekstury siatki (`draw_grid()`). Tworzenie liter od A do J i liczb, a także rysowanie 22 linii, odbywa się tylko za pierwszym razem i jest zachowywane w globalnym buforze `_grid_cache`.
     - **Eksterminacja Alokacji Overlay'ów**: Z głównych pętli `game.py`, `high_scores.py` przeniesiono tworzenie wielkich powierzchni typu `pygame.Surface((1920, 1080))` powyżej pętli. Eliminacja "garbage creation" rzędu 500 MB/s.
-    - **Pre-renderowanie Tekstu**: Całkowicie wyczyszczono z pętli zdarzeń wszystkie wywołania `.render()` w plikach: `auth_screen.py` (napis LOGOWANIE, Login, Hasło), `options.py` (nagłówki opcji), `credits.py` (wszystkie nazwiska), `high_scores.py` (nagłówki tabel i podpowiedzi), `game.py` (podpowiedzi, pytania o nick i kody pokoi).
+    - Pre-renderowanie tekstów: całkowicie wyczyszczono z pętli zdarzeń wszystkie wywołania `.render()` w plikach: `auth_screen.py` (napis LOGOWANIE, Login, Hasło), `options.py` (nagłówki opcji), `credits.py` (wszystkie nazwiska), `high_scores.py` (nagłówki tabel i podpowiedzi), `game.py` (podpowiedzi, pytania o nick i kody pokoi).
+
+    ## [2026-05-22] Kompleksowa Optymalizacja Gameplayu i Rozstawiania
+    - **Diagnoza**: Zidentyfikowano krytyczne wąskie gardło w `battle_phase` – statki były skalowane (`pygame.transform.scale`) oraz obracane w każdej klatce pętli gry. Dodatkowo, etykiety UI (tury, punkty) były renderowane co klatkę.
+    - **Klasa Ship (`ship.py`)**:
+    - Wprowadzono system inteligentnego skalowania: metoda `update_to_grid_size` sprawdza teraz, czy wymiary uległy zmianie przed wykonaniem kosztownych operacji transformacji.
+    - Zaimplementowano cache dla powierzchni przeciągania (`dragging_image`), eliminując operacje `.copy()` i `.fill()` z każdym odświeżeniem ekranu.
+    - **Optymalizacja Bitwy (`game.py` - `battle_phase`)**:
+    - Usunięto wywołania `update_to_grid_size` z głównej pętli bitwy. Statki są teraz inicjalizowane raz przed startem fazy.
+    - Wprowadzono system cache'owania tekstów UI (Tura, Punkty, Zwycięzca). Tekst jest renderowany ponownie tylko wtedy, gdy jego treść lub stan ulegnie zmianie.
+    - **Optymalizacja Rozstawiania (`game.py` - `play_game`)**:
+    - Zoptymalizowano przycisk "LOSUJ" – dzięki zmianom w `Ship.py`, wielokrotne próby rozstawienia nie obciążają już CPU redundantnym skalowaniem grafik.
+    - Pre-renderowano wszystkie etykiety statyczne (np. "TWOJA FLOTA").
+    - **Dalsze Porządki w `game.py`**:
+    - Zoptymalizowano ekrany wpisywania nicku, kodu pokoju oraz ekran oczekiwania (`waiting_screen`), usuwając renderowanie tekstu z każdej klatki.
+    - **Efekt**: Przywrócono stabilne FPS (zależnie od monitora, do 360 FPS) oraz wyeliminowano "zamrożenia" przy losowaniu statków.

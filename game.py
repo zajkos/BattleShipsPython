@@ -52,7 +52,13 @@ def get_player_name(screen, background):
     overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 150))
     prompt_surf = font_desc.render("Podaj swój nick:", True, TEXT_COLOR)
+    prompt_rect = prompt_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))
     inst_surf = font_desc.render("Naciśnij ENTER aby zatwierdzić | ESC aby wrócić", True, (200, 200, 200))
+    inst_rect = inst_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
+
+    last_name = None
+    name_surf = None
+    name_rect = None
 
     while True:
         if background:
@@ -61,16 +67,18 @@ def get_player_name(screen, background):
             screen.fill(BG_COLOR)
 
         screen.blit(overlay, (0, 0))
-
-        screen.blit(prompt_surf, prompt_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100)))
+        screen.blit(prompt_surf, prompt_rect)
 
         input_rect = pygame.Rect(WIDTH // 2 - 300, HEIGHT // 2 - 40, 600, 80)
         pygame.draw.rect(screen, BUTTON_COLOR, input_rect, border_radius=15)
 
-        name_surf = font_input.render(name, True, TEXT_COLOR)
-        screen.blit(name_surf, name_surf.get_rect(center=input_rect.center))
-
-        screen.blit(inst_surf, inst_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100)))
+        if name != last_name:
+            last_name = name
+            name_surf = font_input.render(name, True, TEXT_COLOR)
+            name_rect = name_surf.get_rect(center=input_rect.center)
+        
+        screen.blit(name_surf, name_rect)
+        screen.blit(inst_surf, inst_rect)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -152,6 +160,10 @@ def get_room_code_input(screen, background):
     prompt_surf = font_desc.render("Wpisz kod pokoju (5 znaków):", True, TEXT_COLOR)
     prompt_rect = prompt_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))
 
+    last_code = None
+    code_surf = None
+    code_rect = None
+
     while True:
         if background:
             screen.blit(background, (0, 0))
@@ -164,8 +176,12 @@ def get_room_code_input(screen, background):
         input_rect = pygame.Rect(WIDTH // 2 - 200, HEIGHT // 2 - 40, 400, 80)
         pygame.draw.rect(screen, BUTTON_COLOR, input_rect, border_radius=15)
 
-        code_surf = font_input.render(code.upper(), True, TEXT_COLOR)
-        screen.blit(code_surf, code_surf.get_rect(center=input_rect.center))
+        if code != last_code:
+            last_code = code
+            code_surf = font_input.render(code.upper(), True, TEXT_COLOR)
+            code_rect = code_surf.get_rect(center=input_rect.center)
+
+        screen.blit(code_surf, code_rect)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -196,6 +212,19 @@ def waiting_screen(screen, background, net, status_message, room_code=None):
     overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 180))
 
+    # Pre-renderowanie tekstów
+    title_surf = font_title.render(status_message, True, TEXT_COLOR)
+    title_rect = title_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+
+    code_surf = None
+    code_rect = None
+    if room_code:
+        code_surf = font_desc.render(f"Twój Kod: {room_code}", True, (255, 215, 0))
+        code_rect = code_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))
+
+    instruction_surf = font_desc.render("Naciśnij ESC aby wyjść", True, (200, 200, 200))
+    instruction_rect = instruction_surf.get_rect(center=(WIDTH // 2, HEIGHT - 100))
+
     while True:
         if background:
             screen.blit(background, (0, 0))
@@ -203,16 +232,12 @@ def waiting_screen(screen, background, net, status_message, room_code=None):
             screen.fill(BG_COLOR)
 
         screen.blit(overlay, (0, 0))
+        screen.blit(title_surf, title_rect)
 
-        title_surf = font_title.render(status_message, True, TEXT_COLOR)
-        screen.blit(title_surf, title_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50)))
+        if code_surf:
+            screen.blit(code_surf, code_rect)
 
-        if room_code:
-            code_surf = font_desc.render(f"Twój Kod: {room_code}", True, (255, 215, 0))
-            screen.blit(code_surf, code_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50)))
-
-        instruction_surf = font_desc.render("Naciśnij ESC aby wyjść", True, (200, 200, 200))
-        screen.blit(instruction_surf, instruction_surf.get_rect(center=(WIDTH // 2, HEIGHT - 100)))
+        screen.blit(instruction_surf, instruction_rect)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -410,6 +435,14 @@ def play_game(screen, p1_name, p2_name, net, background=None):
     btn_ready = Button(WIDTH - 400, HEIGHT - 100, 300, 70, "START", font_ui)
     title_font = pygame.font.SysFont("arial", 50, bold=True)
 
+    # Pre-renderowanie etykiet UI
+    tray_label_surf = font_ui.render("TWOJA FLOTA", True, TEXT_COLOR)
+    tray_label_rect = tray_label_surf.get_rect(center=(ship_tray_rect.centerx, ship_tray_rect.top + 30))
+    
+    last_waiting_status = None
+    title_surf = None
+    title_rect = None
+
     while True:
         mouse_pos = pygame.mouse.get_pos()
         
@@ -420,9 +453,14 @@ def play_game(screen, p1_name, p2_name, net, background=None):
         else:
             screen.fill(BG_COLOR)
 
-        title_text = f"Faza Rozstawiania: {p1_name}" if not waiting_for_opponent else "Oczekiwanie na przeciwnika..."
-        title_surf = title_font.render(title_text, True, TEXT_COLOR)
-        screen.blit(title_surf, title_surf.get_rect(center=(WIDTH // 2, 60)))
+        # Aktualizacja tytułu tylko gdy stan się zmieni
+        if waiting_for_opponent != last_waiting_status:
+            last_waiting_status = waiting_for_opponent
+            title_text = f"Faza Rozstawiania: {p1_name}" if not waiting_for_opponent else "Oczekiwanie na przeciwnika..."
+            title_surf = title_font.render(title_text, True, TEXT_COLOR)
+            title_rect = title_surf.get_rect(center=(WIDTH // 2, 60))
+
+        screen.blit(title_surf, title_rect)
 
         # Siatka jest już na obrazku tła
         if not placement_bg:
@@ -432,8 +470,7 @@ def play_game(screen, p1_name, p2_name, net, background=None):
             # UI Zasobnika
             pygame.draw.rect(screen, (40, 40, 60), ship_tray_rect, border_radius=15)
             pygame.draw.rect(screen, GRID_COLOR, ship_tray_rect, width=2, border_radius=15)
-            tray_label = font_ui.render("TWOJA FLOTA", True, TEXT_COLOR)
-            screen.blit(tray_label, tray_label.get_rect(center=(ship_tray_rect.centerx, ship_tray_rect.top + 30)))
+            screen.blit(tray_label_surf, tray_label_rect)
 
             btn_random.check_hover(mouse_pos)
             btn_random.draw(screen)
@@ -645,12 +682,30 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
     
     game_over = False
     winner_name = ""
+    last_game_over_state = False
+    res_surf = None
+    res_rect = None
     btn_back_to_menu = Button(WIDTH // 2 - 200, HEIGHT // 2 + 100, 400, 80, "POWRÓT DO MENU", font_ui)
 
     # Optymalizacja: alokujemy powierzchnie raz, by nie obciążać GC i CPU (FPS drop fix)
     display_surface = pygame.Surface((WIDTH, HEIGHT))
     game_over_overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
     game_over_overlay.fill((0, 0, 0, 200))
+
+    # Pre-renderowanie floty (raz przed pętlą)
+    for ship in my_fleet:
+        ship.update_to_grid_size(cell_size)
+        col, row = ship.grid_pos
+        ship.rect.x = my_grid_x + col * cell_size
+        ship.rect.y = my_grid_y + row * cell_size
+
+    # Cache dla tekstów UI
+    last_turn_status = None
+    last_my_score = -1
+    last_enemy_score = -1
+    turn_surf = None
+    my_score_surf = None
+    enemy_score_surf = None
 
     while True:
         if shake_timer > 0:
@@ -668,28 +723,30 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
         mouse_pos = pygame.mouse.get_pos()
 
         is_my_turn = (current_turn == player_idx)
-        turn_text = "TWOJA TURA!" if is_my_turn else f"Oczekiwanie na ruch: {p2_name}..."
-        turn_color = (50, 205, 50) if is_my_turn else (200, 50, 50)
+        
+        # Aktualizacja tekstów tylko gdy się zmienią
+        if is_my_turn != last_turn_status:
+            last_turn_status = is_my_turn
+            turn_text = "TWOJA TURA!" if is_my_turn else f"Oczekiwanie na ruch: {p2_name}..."
+            turn_color = (50, 205, 50) if is_my_turn else (200, 50, 50)
+            turn_surf = font_title.render(turn_text, True, turn_color)
+            turn_rect = turn_surf.get_rect(center=(WIDTH // 2, 80))
 
-        turn_surf = font_title.render(turn_text, True, turn_color)
-        display_surface.blit(turn_surf, turn_surf.get_rect(center=(WIDTH // 2, 80)))
+        if my_score != last_my_score:
+            last_my_score = my_score
+            my_score_surf = font_score.render(f"Punkty: {my_score}", True, (255, 215, 0))
+            my_score_rect = my_score_surf.get_rect(center=(my_grid_x + grid_size // 2, my_grid_y + grid_size + 40))
 
-        # Punkty pozostają widoczne (pod planszami)
-        my_score_surf = font_score.render(f"Punkty: {my_score}", True, (255, 215, 0))
-        display_surface.blit(my_score_surf,
-                             my_score_surf.get_rect(center=(my_grid_x + grid_size // 2, my_grid_y + grid_size + 40)))
+        if enemy_score != last_enemy_score:
+            last_enemy_score = enemy_score
+            enemy_score_surf = font_score.render(f"Punkty: {enemy_score}", True, (255, 215, 0))
+            enemy_score_rect = enemy_score_surf.get_rect(center=(enemy_grid_x + grid_size // 2, enemy_grid_y + grid_size + 40))
 
-        enemy_score_surf = font_score.render(f"Punkty: {enemy_score}", True, (255, 215, 0))
-        display_surface.blit(enemy_score_surf,
-                             enemy_score_surf.get_rect(
-                                 center=(enemy_grid_x + grid_size // 2, enemy_grid_y + grid_size + 40)))
+        display_surface.blit(turn_surf, turn_rect)
+        display_surface.blit(my_score_surf, my_score_rect)
+        display_surface.blit(enemy_score_surf, enemy_score_rect)
 
         for ship in my_fleet:
-            col, row = ship.grid_pos
-            ship.cell_size = cell_size
-            ship.update_to_grid_size(cell_size)
-            ship.rect.x = my_grid_x + col * cell_size
-            ship.rect.y = my_grid_y + row * cell_size
             ship.draw(display_surface)
 
         for x, y in my_shots_miss:
@@ -805,10 +862,14 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
         if game_over:
             display_surface.blit(game_over_overlay, (0, 0))
 
-            res_text = f"ZWYCIĘZCA: {winner_name}"
-            res_color = (255, 215, 0) if winner_name == p1_name else (200, 50, 50)
-            res_surf = font_title.render(res_text, True, res_color)
-            display_surface.blit(res_surf, res_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50)))
+            if game_over != last_game_over_state:
+                last_game_over_state = game_over
+                res_text = f"ZWYCIĘZCA: {winner_name}"
+                res_color = (255, 215, 0) if winner_name == p1_name else (200, 50, 50)
+                res_surf = font_title.render(res_text, True, res_color)
+                res_rect = res_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+            
+            display_surface.blit(res_surf, res_rect)
 
             btn_back_to_menu.check_hover(mouse_pos)
             btn_back_to_menu.draw(display_surface)

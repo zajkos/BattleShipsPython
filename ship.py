@@ -42,22 +42,21 @@ class Ship:
             is_img_horizontal = img_w > img_h
             
             # Przygotowujemy bazowy obrazek - jeśli orientacja pliku nie pasuje do stanu statku, obracamy o 90 stopni
-            # Robimy to PRZED skalowaniem, żeby uniknąć rozciągnięcia (stretching)
             if self.horizontal != is_img_horizontal:
                 base_image = pygame.transform.rotate(self.image_raw, 90)
             else:
                 base_image = self.image_raw
             
-            # Teraz skalujemy już poprawnie zorientowany obrazek do wymiarów prostokąta statku
+            # Skalujemy obrazek do wymiarów prostokąta statku
             self.image = pygame.transform.scale(base_image, (self.rect.width, self.rect.height))
+            # Cache dla przeciągania
+            self.dragging_image = self.image.copy()
+            self.dragging_image.fill((255, 255, 255, 128), special_flags=pygame.BLEND_RGBA_MULT)
 
     def draw(self, surface):
         if self.image:
             if self.dragging:
-                # Efekt półprzezroczystości przy przeciąganiu
-                temp_surface = self.image.copy()
-                temp_surface.fill((255, 255, 255, 128), special_flags=pygame.BLEND_RGBA_MULT)
-                surface.blit(temp_surface, self.rect)
+                surface.blit(self.dragging_image, self.rect)
             else:
                 surface.blit(self.image, self.rect)
         else:
@@ -75,17 +74,26 @@ class Ship:
         return cells
 
     def update_to_grid_size(self, new_cell_size=80):
+        # Sprawdzamy czy zmiana jest konieczna
+        target_w = self.length * new_cell_size if self.horizontal else new_cell_size
+        target_h = new_cell_size if self.horizontal else self.length * new_cell_size
+        
+        if self.rect.width == target_w and self.rect.height == target_h and self.cell_size == new_cell_size:
+            return
+
         self.cell_size = new_cell_size
-        if self.horizontal:
-            self.rect.width = self.length * self.cell_size
-            self.rect.height = self.cell_size
-        else:
-            self.rect.width = self.cell_size
-            self.rect.height = self.length * self.cell_size
+        self.rect.width = target_w
+        self.rect.height = target_h
         self._update_image()
 
     def update_to_tray_size(self):
+        target_w = self.length * (self.cell_size // 2)
+        target_h = self.cell_size // 2
+        
+        if self.rect.width == target_w and self.rect.height == target_h and self.horizontal:
+            return
+
         self.horizontal = True # Zawsze poziomo w zasobniku
-        self.rect.width = self.length * (self.cell_size // 2)
-        self.rect.height = self.cell_size // 2
+        self.rect.width = target_w
+        self.rect.height = target_h
         self._update_image()
