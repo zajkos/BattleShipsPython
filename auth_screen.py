@@ -70,7 +70,7 @@ def show_auth_screen(screen, clock, net, background=None):
 
     # Przyciski ułożone pionowo, o identycznych stałych wymiarach
     bw, bh = 260, 115
-    btn_login = ImageButton(WIDTH // 2 - bw // 2, 400, "zaloguj (1).png", width=bw, height=bh)
+    btn_login = ImageButton(WIDTH // 2 - bw // 2, 400, "zaloguj (2).png", width=bw, height=bh)
     btn_register = ImageButton(WIDTH // 2 - bw // 2, 400 + bh + 20, "zarejestruj (2).png", width=bw, height=bh)
     btn_exit = ImageButton(WIDTH // 2 - bw // 2, 400 + (bh + 20) * 2, "wyjście (2).png", width=bw, height=bh)
 
