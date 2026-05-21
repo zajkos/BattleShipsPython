@@ -1006,3 +1006,15 @@ przypisane do niego uprawnienia dostępu
 2026-05-21 21:46:19,598 [INFO] Klient 1 połączył się z serwerem (oczekiwanie na logowanie).
 2026-05-21 21:49:34,491 [INFO] Zamykanie połączenia: Klient 0.
 2026-05-21 21:49:38,065 [INFO] Zamykanie połączenia: Klient 1.
+2026-05-21 21:58:04,917 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-21 21:58:04,958 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-21 21:58:08,621 [INFO] Klient 0 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 21:58:08,621 [INFO] Klient 1 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 21:58:23,585 [INFO] Zamykanie połączenia: Klient 1.
+2026-05-21 21:58:27,279 [INFO] Zamykanie połączenia: Klient 0.
+2026-05-21 21:59:26,127 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-21 21:59:26,175 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-21 21:59:29,728 [INFO] Klient 0 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 21:59:29,733 [INFO] Klient 1 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 21:59:37,501 [INFO] Zamykanie połączenia: Klient 1.
+2026-05-21 21:59:38,495 [INFO] Zamykanie połączenia: Klient 0.

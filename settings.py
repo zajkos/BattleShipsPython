@@ -3,7 +3,7 @@
 # Ustawienia ekranu - zmienione na Full HD
 WIDTH = 1920
 HEIGHT = 1080
-FPS = 60
+FPS = 360
 
 # Nazwa pliku tła (musi znajdować się w tym samym katalogu co skrypty)
 BACKGROUND_IMAGE_FILENAME = "unnamed.png"

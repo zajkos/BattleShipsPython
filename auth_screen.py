@@ -69,10 +69,10 @@ def show_auth_screen(screen, clock, net, background=None):
     input_login.color = input_login.color_active
 
     # Przyciski ułożone pionowo, o identycznych stałych wymiarach
-    bw, bh = 300, 135
+    bw, bh = 260, 115
     btn_login = ImageButton(WIDTH // 2 - bw // 2, 400, "zaloguj (1).png", width=bw, height=bh)
-    btn_register = ImageButton(WIDTH // 2 - bw // 2, 400 + bh + 20, "zarejestruj (1).png", width=bw, height=bh)
-    btn_exit = ImageButton(WIDTH // 2 - bw // 2, 400 + (bh + 20) * 2, "wyjście (1).png", width=bw, height=bh)
+    btn_register = ImageButton(WIDTH // 2 - bw // 2, 400 + bh + 20, "zarejestruj (2).png", width=bw, height=bh)
+    btn_exit = ImageButton(WIDTH // 2 - bw // 2, 400 + (bh + 20) * 2, "wyjście (2).png", width=bw, height=bh)
 
     message = ""
     message_color = TEXT_COLOR
