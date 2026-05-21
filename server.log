@@ -707,3 +707,34 @@ przypisane do niego uprawnienia dostępu
 2026-05-20 18:25:30,841 [INFO] Gracz 'chujchuj123' (DB ID: 3) zalogował się pomyślnie.
 2026-05-20 18:27:39,052 [INFO] Zamykanie połączenia: Klient 1.
 2026-05-20 18:27:41,269 [INFO] Zamykanie połączenia: Klient 0.
+2026-05-21 18:08:40,988 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-21 18:08:41,216 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-21 18:08:48,286 [INFO] Klient 0 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 18:09:18,944 [INFO] Zarejestrowano nowego gracza: Login123
+2026-05-21 18:09:22,994 [INFO] Gracz 'Login123' (DB ID: 4) zalogował się pomyślnie.
+2026-05-21 18:09:31,489 [INFO] Gracz Login123 stworzył pokój: 65IAS
+2026-05-21 18:09:48,363 [INFO] Klient 1 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 18:10:02,279 [INFO] Zarejestrowano nowego gracza: Haslo123
+2026-05-21 18:10:03,537 [INFO] Gracz 'Haslo123' (DB ID: 5) zalogował się pomyślnie.
+2026-05-21 18:10:14,150 [INFO] Gracz Haslo123 dołączył do pokoju: 65IAS
+2026-05-21 18:10:27,268 [INFO] Gracz Haslo123 w pokoju 65IAS jest gotowy.
+2026-05-21 18:10:42,114 [INFO] Gracz Login123 w pokoju 65IAS jest gotowy.
+2026-05-21 18:10:42,114 [INFO] Pokój 65IAS: Obaj gracze gotowi. Start bitwy!
+2026-05-21 18:13:39,397 [INFO] Mecz 1 zapisany. Zwycięzca: Login123
+2026-05-21 18:13:59,563 [INFO] Zamykanie połączenia: Klient 0.
+2026-05-21 18:14:01,740 [INFO] Zamykanie połączenia: Klient 1.
+2026-05-21 18:29:37,548 [INFO] Serwer uruchomiony (Port: 5555).
+2026-05-21 18:29:37,626 [INFO] Pomyślnie połączono z bazą PostgreSQL.
+2026-05-21 18:29:46,372 [INFO] Klient 0 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 18:29:58,448 [INFO] Gracz 'Login123' (DB ID: 4) zalogował się pomyślnie.
+2026-05-21 18:30:01,734 [INFO] Gracz Login123 szuka losowej gry...
+2026-05-21 18:30:14,406 [INFO] Klient 1 połączył się z serwerem (oczekiwanie na logowanie).
+2026-05-21 18:30:24,763 [INFO] Gracz 'Haslo123' (DB ID: 5) zalogował się pomyślnie.
+2026-05-21 18:30:26,594 [INFO] Matchmaking: Login123 vs Haslo123 (Pokój: 4ITUT)
+2026-05-21 18:31:06,285 [INFO] Gracz Haslo123 w pokoju 4ITUT jest gotowy.
+2026-05-21 18:31:12,546 [INFO] Gracz Login123 w pokoju 4ITUT jest gotowy.
+2026-05-21 18:31:12,546 [INFO] Pokój 4ITUT: Obaj gracze gotowi. Start bitwy!
+2026-05-21 18:32:05,215 [INFO] Mecz 2 zapisany. Zwycięzca: Login123
+2026-05-21 18:32:42,802 [INFO] Zamykanie połączenia: Klient 1.
+2026-05-21 18:32:44,695 [ERROR] Błąd połączenia klienta (ID:0): [WinError 10054] Istniejące połączenie zostało gwałtownie zamknięte przez zdalnego hosta
+2026-05-21 18:32:44,695 [INFO] Zamykanie połączenia: Klient 0.

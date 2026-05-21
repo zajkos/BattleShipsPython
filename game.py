@@ -763,26 +763,56 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
                 active_animations.remove(anim)
 
         if game_over:
+            # 1. Przyciemnienie tła
             overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-            overlay.fill((0, 0, 0, 200))
+            overlay.fill((0, 0, 0, 230))  # Mocniejsze przyciemnienie, żeby wyeksponować wyniki
             display_surface.blit(overlay, (0, 0))
 
-            res_text = f"ZWYCIĘZCA: {winner_name}"
-            res_color = (255, 215, 0) if winner_name == p1_name else (200, 50, 50)
-            res_surf = font_title.render(res_text, True, res_color)
-            display_surface.blit(res_surf, res_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50)))
+            # 2. Główny napis (Zwycięstwo / Porażka)
+            is_winner = (winner_name == p1_name)
+            main_text = "ZWYCIĘSTWO!" if is_winner else "PORAŻKA!"
+            main_color = (255, 215, 0) if is_winner else (200, 50, 50)  # Złoty dla wygranej, czerwony dla przegranej
 
+            font_massive = pygame.font.SysFont("arial", 120, bold=True)
+            main_surf = font_massive.render(main_text, True, main_color)
+            display_surface.blit(main_surf, main_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 200)))
+
+            # 3. Podtytuł z nickiem zwycięzcy
+            sub_text = f"Zwycięzca meczu: {winner_name}"
+            sub_surf = font_title.render(sub_text, True, TEXT_COLOR)
+            display_surface.blit(sub_surf, sub_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 80)))
+
+            # 4. Wyświetlanie punktacji obu graczy
+            font_stats = pygame.font.SysFont("arial", 45)
+
+            # Teksty statystyk
+            p1_stat_text = f"{p1_name} (Ty): {my_score} pkt"
+            p2_stat_text = f"{p2_name} (Przeciwnik): {enemy_score} pkt"
+
+            # Renderowanie statystyk
+            p1_surf = font_stats.render(p1_stat_text, True, (100, 200, 255))  # Jasnoniebieski dla gracza
+            p2_surf = font_stats.render(p2_stat_text, True, (255, 100, 100))  # Jasnoczerwony dla wroga
+
+            display_surface.blit(p1_surf, p1_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 20)))
+            display_surface.blit(p2_surf, p2_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 80)))
+
+            # 5. Aktualizacja pozycji i rysowanie przycisku powrotu
+            btn_back_to_menu.rect.y = HEIGHT // 2 + 180
             btn_back_to_menu.check_hover(mouse_pos)
             btn_back_to_menu.draw(display_surface)
 
+            # 6. Obsługa zdarzeń na ekranie końcowym
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if btn_back_to_menu.handle_event(event) or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                # Kliknięcie "Powrót do menu" lub wciśnięcie ESCAPE
+                if btn_back_to_menu.handle_event(event) or (
+                        event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     net.client.setblocking(True)
                     return "MENU"
 
+            # Rysowanie wszystkiego na ekran
         screen.blit(display_surface, (render_offset[0], render_offset[1]))
 
         pygame.display.update()
