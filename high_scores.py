@@ -5,7 +5,7 @@ import json
 from settings import *
 from button import Button
 
-def show_high_scores(screen, clock, net):
+def show_high_scores(screen, clock, net, background=None):
     """Ekran wyświetlający listę najlepszych 100 wyników z serwerem i sortowaniem."""
     # Zmniejszone czcionki dla lepszej czytelności
     font_title = pygame.font.SysFont("arial", 70, bold=True)
@@ -18,7 +18,12 @@ def show_high_scores(screen, clock, net):
 
     # Pobieranie danych z serwera
     loading_surf = font_header.render("Pobieranie wyników...", True, TEXT_COLOR)
-    screen.fill(BG_COLOR)
+    
+    if background:
+        screen.blit(background, (0, 0))
+    else:
+        screen.fill(BG_COLOR)
+        
     screen.blit(loading_surf, loading_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2)))
     pygame.display.update()
 
@@ -150,22 +155,35 @@ def show_high_scores(screen, clock, net):
     # Pasek przewijania (zmienne do obsługi przeciągania)
     dragging_scroll = False
 
+    overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 210))
+    
+    # Optymalizacja: Pre-renderowanie stałych elementów
+    title_surf = font_title.render("RANKING GRACZY", True, (255, 215, 0))
+    title_rect = title_surf.get_rect(center=(WIDTH // 2, 80))
+    
+    hint_surf = font_small.render("Kliknij nagłówek, aby sortować | Kółko myszy / Strzałki / Przeciągnij pasek: Przewijanie", True, (150, 150, 150))
+    hint_rect = hint_surf.get_rect(center=(WIDTH // 2, HEIGHT - 115))
+    
+    # Cache dla nazw kolumn (aktywne / nieaktywne)
+    header_surfaces = {}
+    for col in cols:
+        header_surfaces[(col["name"], True)] = font_header.render(col["name"], True, (255, 215, 0))
+        header_surfaces[(col["name"], False)] = font_header.render(col["name"], True, (180, 180, 180))
+        
+    ind_up = font_header.render("▲", True, (255, 215, 0))
+    ind_down = font_header.render("▼", True, (255, 215, 0))
+
     while True:
         mouse_pos = pygame.mouse.get_pos()
-        screen.fill(BG_COLOR)
 
-        try:
-            background_image_raw = pygame.image.load(BACKGROUND_IMAGE_FILENAME).convert()
-            background_image = pygame.transform.scale(background_image_raw, (WIDTH, HEIGHT))
-            screen.blit(background_image, (0, 0))
-            overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-            overlay.fill((0, 0, 0, 210))
+        if background:
+            screen.blit(background, (0, 0))
             screen.blit(overlay, (0, 0))
-        except:
-            pass
-
-        title_surf = font_title.render("RANKING GRACZY", True, (255, 215, 0))
-        screen.blit(title_surf, title_surf.get_rect(center=(WIDTH // 2, 80)))
+        else:
+            screen.fill(BG_COLOR)
+            
+        screen.blit(title_surf, title_rect)
 
         # Nagłówki kolumn z detekcją kliknięcia
         curr_x = table_x
@@ -175,14 +193,13 @@ def show_high_scores(screen, clock, net):
             header_rects.append((rect, col))
             
             is_active = current_sort_col == (col["sort_key"] if col["sort_key"] else "rank")
-            h_color = (255, 215, 0) if is_active else (180, 180, 180)
             
             if rect.collidepoint(mouse_pos):
                 pygame.draw.rect(screen, (255, 255, 255, 30), rect, border_radius=5)
 
             # --- LOGIKA REZERWACJI MIEJSCA ---
-            # 1. Renderujemy tekst
-            text_surf = font_header.render(col["name"], True, h_color)
+            # Pobieramy zbuforowany obrazek nagłówka
+            text_surf = header_surfaces[(col["name"], is_active)]
             
             # 2. Rezerwujemy stałe miejsce na strzałkę (np. 30px), aby tekst nie "skakał"
             arrow_reserved_space = 30
@@ -197,8 +214,7 @@ def show_high_scores(screen, clock, net):
 
             # 5. Jeśli kolumna jest aktywna, rysujemy strzałkę w zarezerwowanym miejscu
             if is_active:
-                indicator = "▲" if not sort_reverse else "▼"
-                ind_surf = font_header.render(indicator, True, h_color)
+                ind_surf = ind_up if not sort_reverse else ind_down
                 # Strzałka zawsze 5px za tekstem
                 ind_rect = ind_surf.get_rect(midleft=(text_rect.right + 5, text_rect.centery))
                 screen.blit(ind_surf, ind_rect)
@@ -224,8 +240,7 @@ def show_high_scores(screen, clock, net):
             pygame.draw.rect(screen, bar_color, bar_rect, border_radius=6)
 
         # Stopka z instrukcją - PRZESUNIĘTA W DÓŁ (HEIGHT - 115)
-        hint_surf = font_small.render("Kliknij nagłówek, aby sortować | Kółko myszy / Strzałki / Przeciągnij pasek: Przewijanie", True, (150, 150, 150))
-        screen.blit(hint_surf, hint_surf.get_rect(center=(WIDTH // 2, HEIGHT - 115)))
+        screen.blit(hint_surf, hint_rect)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

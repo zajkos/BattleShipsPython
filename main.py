@@ -2,7 +2,7 @@
 import pygame
 import sys
 from settings import *
-from button import Button
+from button import Button, ImageButton
 import game
 from credits import show_credits
 from options import show_options
@@ -32,15 +32,8 @@ def draw_text(text, font, color, surface, x, y):
     surface.blit(textobj, textrect)
 
 
-def main_menu(player_name, net):
+def main_menu(player_name, net, background_image):
     """Główne menu uruchamiane po pomyślnym zalogowaniu."""
-    try:
-        background_image_raw = pygame.image.load(BACKGROUND_IMAGE_FILENAME).convert()
-        background_image = pygame.transform.scale(background_image_raw, (WIDTH, HEIGHT))
-    except pygame.error as e:
-        print(f"Nie można załadować obrazu tła: {e}")
-        background_image = None
-
     btn_width, btn_height = 450, 80
     start_x = WIDTH // 2 - btn_width // 2
     start_y = 350
@@ -50,9 +43,13 @@ def main_menu(player_name, net):
     btn_scores = Button(start_x, start_y + spacing, btn_width, btn_height, "Top Wyniki", font_button)
     btn_options = Button(start_x, start_y + spacing * 2, btn_width, btn_height, "Opcje", font_button)
     btn_credits = Button(start_x, start_y + spacing * 3, btn_width, btn_height, "Twórcy", font_button)
-    btn_exit = Button(start_x, start_y + spacing * 4, btn_width, btn_height, "Wyjście", font_button)
+    # Proporcjonalny przycisk wyjścia (szerokość mniejsza niż prostokąty, by nie był gigantyczny)
+    btn_exit = ImageButton(WIDTH // 2 - 165, start_y + spacing * 4 - 20, "wyjście (1).png", width=330)
 
     buttons = [btn_play, btn_scores, btn_options, btn_credits, btn_exit]
+    
+    welcome_font = pygame.font.SysFont("arial", 40)
+    welcome_surf = welcome_font.render(f"Zalogowano jako: {player_name}", True, (150, 200, 255))
 
     while True:
         if background_image:
@@ -63,7 +60,6 @@ def main_menu(player_name, net):
         draw_text('GRA STATKI', font_title, TEXT_COLOR, screen, WIDTH // 2, 200)
 
         # Powitanie zalogowanego gracza w menu
-        welcome_surf = pygame.font.SysFont("arial", 40).render(f"Zalogowano jako: {player_name}", True, (150, 200, 255))
         screen.blit(welcome_surf, (20, 20))
 
         mouse_pos = pygame.mouse.get_pos()
@@ -94,7 +90,7 @@ def main_menu(player_name, net):
                             opponent = game.waiting_screen(screen, background_image, net, msg, r_code)
                             if opponent:
                                 # Gra wystartowała!
-                                status = game.play_game(screen, player_name, opponent, net)
+                                status = game.play_game(screen, player_name, opponent, net, background_image)
                                 if status == "MENU":
                                     print("Rozgrywka zakończona, powrót do menu.")
                             else:
@@ -102,7 +98,7 @@ def main_menu(player_name, net):
 
                         elif response and response.get("status") == "game_start":
                             # Znaleziono od razu (dołączono do kogoś)
-                            status = game.play_game(screen, player_name, response.get("opponent"), net)
+                            status = game.play_game(screen, player_name, response.get("opponent"), net, background_image)
                             if status == "MENU":
                                 print("Rozgrywka zakończona, powrót do menu.")
                         elif response:
@@ -114,11 +110,11 @@ def main_menu(player_name, net):
                         print(f"Błąd sieci: {e}")
 
             if btn_scores.handle_event(event):
-                show_high_scores(screen, clock, net)
+                show_high_scores(screen, clock, net, background_image)
             if btn_options.handle_event(event):
-                show_options(screen, clock)
+                show_options(screen, clock, background_image)
             if btn_credits.handle_event(event):
-                show_credits(screen, clock)
+                show_credits(screen, clock, background_image)
             if btn_exit.handle_event(event):
                 pygame.quit()
                 sys.exit()
@@ -139,9 +135,17 @@ if __name__ == "__main__":
         print("Nie można połączyć z serwerem. Upewnij się, że serwer jest uruchomiony.")
         sys.exit()
 
-    # Wywołanie ekranu autoryzacji z przekazaniem połączenia sieciowego
-    logged_player = show_auth_screen(screen, clock, global_net)
+    # Załadowanie tła raz na początku
+    try:
+        background_image_raw = pygame.image.load(BACKGROUND_IMAGE_FILENAME).convert()
+        background_image = pygame.transform.scale(background_image_raw, (WIDTH, HEIGHT))
+    except pygame.error as e:
+        print(f"Nie można załadować obrazu tła: {e}")
+        background_image = None
+
+    # Wywołanie ekranu autoryzacji z przekazaniem połączenia sieciowego i tła
+    logged_player = show_auth_screen(screen, clock, global_net, background_image)
 
     # Jeśli gracz pomyślnie się zalogował, wchodzi do Menu Głównego
     if logged_player:
-        main_menu(logged_player, global_net)
+        main_menu(logged_player, global_net, background_image)

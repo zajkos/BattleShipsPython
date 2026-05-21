@@ -2,7 +2,7 @@ import pygame
 import sys
 import re
 from settings import *
-from button import Button
+from button import Button, ImageButton
 
 
 class InputBox:
@@ -57,7 +57,7 @@ def check_password_strength(password):
     return True, "Hasło jest silne."
 
 
-def show_auth_screen(screen, clock, net):
+def show_auth_screen(screen, clock, net, background=None):
     font_header = pygame.font.SysFont("arial", 60, bold=True)
     font_msg = pygame.font.SysFont("arial", 30)
 
@@ -68,29 +68,40 @@ def show_auth_screen(screen, clock, net):
     input_login.active = True
     input_login.color = input_login.color_active
 
-    btn_login = Button(WIDTH // 2 - 200, 400, 190, 60, "Zaloguj", font_msg)
-    btn_register = Button(WIDTH // 2 + 10, 400, 190, 60, "Zarejestruj", font_msg)
-    btn_exit = Button(WIDTH // 2 - 100, 500, 200, 60, "Wyjście", font_msg)
+    # Przyciski ułożone pionowo, o identycznych stałych wymiarach
+    bw, bh = 300, 135
+    btn_login = ImageButton(WIDTH // 2 - bw // 2, 400, "zaloguj (1).png", width=bw, height=bh)
+    btn_register = ImageButton(WIDTH // 2 - bw // 2, 400 + bh + 20, "zarejestruj (1).png", width=bw, height=bh)
+    btn_exit = ImageButton(WIDTH // 2 - bw // 2, 400 + (bh + 20) * 2, "wyjście (1).png", width=bw, height=bh)
 
     message = ""
     message_color = TEXT_COLOR
 
+    # Cache statycznych tekstów (optymalizacja)
+    header_surf = font_header.render("LOGOWANIE", True, TEXT_COLOR)
+    header_rect = header_surf.get_rect(center=(WIDTH // 2, 100))
+    login_label = font_msg.render("Login:", True, TEXT_COLOR)
+    password_label = font_msg.render("Hasło:", True, TEXT_COLOR)
+
     running = True
     while running:
-        screen.fill(BG_COLOR)
+        if background:
+            screen.blit(background, (0, 0))
+        else:
+            screen.fill(BG_COLOR)
+
         mouse_pos = pygame.mouse.get_pos()
 
-        header_surf = font_header.render("LOGOWANIE", True, TEXT_COLOR)
-        screen.blit(header_surf, header_surf.get_rect(center=(WIDTH // 2, 100)))
+        screen.blit(header_surf, header_rect)
 
         # Rysowanie etykiet
-        screen.blit(font_msg.render("Login:", True, TEXT_COLOR), (WIDTH // 2 - 200, 160))
-        screen.blit(font_msg.render("Hasło:", True, TEXT_COLOR), (WIDTH // 2 - 200, 260))
+        screen.blit(login_label, (WIDTH // 2 - 200, 160))
+        screen.blit(password_label, (WIDTH // 2 - 200, 260))
 
-        # Wiadomości systemowe (błędy/sukces)
+        # Wiadomości systemowe (błędy/sukces) przesunięte niżej
         if message:
             msg_surf = font_msg.render(message, True, message_color)
-            screen.blit(msg_surf, msg_surf.get_rect(center=(WIDTH // 2, 600)))
+            screen.blit(msg_surf, msg_surf.get_rect(center=(WIDTH // 2, 980)))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

@@ -4,7 +4,7 @@ from settings import *
 from button import Button
 
 
-def show_credits(screen, clock):
+def show_credits(screen, clock, background=None):
     """Wyświetla ekran twórców z przewijającym się tekstem."""
 
     # Czcionki
@@ -33,9 +33,22 @@ def show_credits(screen, clock):
     text_y_start = HEIGHT
     scroll_speed = 1.5
 
+    # Optymalizacja: Pre-renderowanie linijek tekstu (eliminacja dropów FPS)
+    rendered_lines = []
+    for line in credits_lines:
+        if line == "GRA STATKI":
+            surf = font_header.render(line, True, TEXT_COLOR)
+        else:
+            surf = font_text.render(line, True, TEXT_COLOR)
+        rendered_lines.append(surf)
+
     running = True
     while running:
-        screen.fill(BG_COLOR)  # Jeśli macie tło z KAN-38, podmień to na screen.blit(background, (0,0))
+        if background:
+            screen.blit(background, (0, 0))
+        else:
+            screen.fill(BG_COLOR)
+
         mouse_pos = pygame.mouse.get_pos()
 
         # 1. Obsługa zdarzeń
@@ -48,21 +61,13 @@ def show_credits(screen, clock):
             if btn_back.handle_event(event):
                 running = False
 
-                # 2. Rysowanie i przewijanie tekstu
+        # 2. Rysowanie i przewijanie tekstu
         current_y = text_y_start
-        for line in credits_lines:
-            # Używamy większej czcionki dla głównego tytułu
-            if line == "GRA STATKI":
-                text_surf = font_header.render(line, True, TEXT_COLOR)
-            else:
-                text_surf = font_text.render(line, True, TEXT_COLOR)
-
-            text_rect = text_surf.get_rect(center=(WIDTH // 2, current_y))
-            screen.blit(text_surf, text_rect)
-
+        for surf in rendered_lines:
+            text_rect = surf.get_rect(center=(WIDTH // 2, current_y))
+            screen.blit(surf, text_rect)
             # Odstęp między linijkami
             current_y += 50
-
             # Aktualizacja pozycji Y (przewijanie w górę)
         text_y_start -= scroll_speed
 

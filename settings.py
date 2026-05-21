@@ -6,7 +6,7 @@ HEIGHT = 1080
 FPS = 60
 
 # Nazwa pliku tła (musi znajdować się w tym samym katalogu co skrypty)
-BACKGROUND_IMAGE_FILENAME = "background.jpg"
+BACKGROUND_IMAGE_FILENAME = "unnamed.png"
 
 # Kolory (RGB)
 BG_COLOR = (30, 30, 40) # Ten kolor będzie teraz służył jako "wykończenie" pod spodem

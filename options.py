@@ -7,7 +7,7 @@ current_volume = 0.5  # Głośność muzyki (0.0 do 1.0)
 sfx_enabled = True  # Czy efekty dźwiękowe są włączone
 
 
-def show_options(screen, clock):
+def show_options(screen, clock, background=None):
     global current_volume, sfx_enabled
 
     font_header = pygame.font.SysFont("arial", 80, bold=True)
@@ -24,14 +24,24 @@ def show_options(screen, clock):
     # Przycisk powrotu
     btn_back = Button(WIDTH // 2 - 200, HEIGHT - 150, 400, 80, "Powrót", font_text)
 
+    # Optymalizacja: Pre-renderowanie statycznych napisów
+    header_surf = font_header.render("OPCJE GRY", True, TEXT_COLOR)
+    header_rect = header_surf.get_rect(center=(WIDTH // 2, 150))
+
+    sfx_label_surf = font_text.render("Efekty Dźwiękowe (SFX):", True, TEXT_COLOR)
+    sfx_label_rect = sfx_label_surf.get_rect(center=(WIDTH // 2, 480))
+
     running = True
     while running:
-        screen.fill(BG_COLOR)
+        if background:
+            screen.blit(background, (0, 0))
+        else:
+            screen.fill(BG_COLOR)
+
         mouse_pos = pygame.mouse.get_pos()
 
         # 1. Rysowanie Nagłówka
-        header_surf = font_header.render("OPCJE GRY", True, TEXT_COLOR)
-        screen.blit(header_surf, header_surf.get_rect(center=(WIDTH // 2, 150)))
+        screen.blit(header_surf, header_rect)
 
         # 2. Rysowanie sekcji Głośności Muzyki
         vol_text = f"Głośność Muzyki: {int(current_volume * 100)}%"
@@ -42,9 +52,7 @@ def show_options(screen, clock):
         sfx_status = "WŁĄCZONE" if sfx_enabled else "WYŁĄCZONE"
         sfx_color = (50, 205, 50) if sfx_enabled else (200, 50, 50)  # Zielony / Czerwony
 
-        sfx_label_surf = font_text.render("Efekty Dźwiękowe (SFX):", True, TEXT_COLOR)
-        screen.blit(sfx_label_surf, sfx_label_surf.get_rect(center=(WIDTH // 2, 480)))
-
+        screen.blit(sfx_label_surf, sfx_label_rect)
         sfx_status_surf = font_text.render(sfx_status, True, sfx_color)
         screen.blit(sfx_status_surf, sfx_status_surf.get_rect(center=(WIDTH // 2, 530)))
 

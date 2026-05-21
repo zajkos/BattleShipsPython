@@ -7,26 +7,39 @@ from button import Button
 from audio_manager import play_sfx  # --- DODANO IMPORT AUDIO ---
 
 
+# Globalny cache dla siatki (żeby nie renderować 20 liter/cyfr w każdej klatce)
+_grid_cache = None
+
 def draw_grid(surface, x_offset, y_offset, size=800):
-    """Rysuje siatkę 10x10 wraz z oznaczeniami A-J oraz 1-10."""
-    cell_size = size // 10
-    font_labels = pygame.font.SysFont("arial", 30, bold=True)
-    letters = "ABCDEFGHIJ"
+    """Rysuje siatkę 10x10 wraz z oznaczeniami A-J oraz 1-10 (zoptymalizowana pamięcią podręczną)."""
+    global _grid_cache
+    if _grid_cache is None:
+        _grid_cache = pygame.Surface((size + 60, size + 60), pygame.SRCALPHA)
+        cell_size = size // 10
+        font_labels = pygame.font.SysFont("arial", 30, bold=True)
+        letters = "ABCDEFGHIJ"
 
-    for i in range(10):
-        let_surf = font_labels.render(letters[i], True, TEXT_COLOR)
-        let_rect = let_surf.get_rect(center=(x_offset + i * cell_size + cell_size // 2, y_offset - 30))
-        surface.blit(let_surf, let_rect)
+        # Odsunięcia wewnątrz bufora
+        buf_x = 40
+        buf_y = 40
 
-        num_surf = font_labels.render(str(i + 1), True, TEXT_COLOR)
-        num_rect = num_surf.get_rect(center=(x_offset - 40, y_offset + i * cell_size + cell_size // 2))
-        surface.blit(num_surf, num_rect)
+        for i in range(10):
+            let_surf = font_labels.render(letters[i], True, TEXT_COLOR)
+            let_rect = let_surf.get_rect(center=(buf_x + i * cell_size + cell_size // 2, buf_y - 30))
+            _grid_cache.blit(let_surf, let_rect)
 
-    for i in range(11):
-        pygame.draw.line(surface, GRID_COLOR, (x_offset, y_offset + i * cell_size),
-                         (x_offset + size, y_offset + i * cell_size), 2)
-        pygame.draw.line(surface, GRID_COLOR, (x_offset + i * cell_size, y_offset),
-                         (x_offset + i * cell_size, y_offset + size), 2)
+            num_surf = font_labels.render(str(i + 1), True, TEXT_COLOR)
+            num_rect = num_surf.get_rect(center=(buf_x - 30, buf_y + i * cell_size + cell_size // 2))
+            _grid_cache.blit(num_surf, num_rect)
+
+        for i in range(11):
+            pygame.draw.line(_grid_cache, GRID_COLOR, (buf_x, buf_y + i * cell_size),
+                             (buf_x + size, buf_y + i * cell_size), 2)
+            pygame.draw.line(_grid_cache, GRID_COLOR, (buf_x + i * cell_size, buf_y),
+                             (buf_x + i * cell_size, buf_y + size), 2)
+
+    # Rysujemy skeszowaną siatkę we właściwym miejscu na ekranie
+    surface.blit(_grid_cache, (x_offset - 40, y_offset - 40))
 
 
 def get_player_name(screen, background):
@@ -36,18 +49,19 @@ def get_player_name(screen, background):
     name = ""
     clock = pygame.time.Clock()
 
+    overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 150))
+    prompt_surf = font_desc.render("Podaj swój nick:", True, TEXT_COLOR)
+    inst_surf = font_desc.render("Naciśnij ENTER aby zatwierdzić | ESC aby wrócić", True, (200, 200, 200))
+
     while True:
         if background:
             screen.blit(background, (0, 0))
         else:
             screen.fill(BG_COLOR)
 
-        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 150))
         screen.blit(overlay, (0, 0))
 
-        prompt = "Podaj swój nick:"
-        prompt_surf = font_desc.render(prompt, True, TEXT_COLOR)
         screen.blit(prompt_surf, prompt_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100)))
 
         input_rect = pygame.Rect(WIDTH // 2 - 300, HEIGHT // 2 - 40, 600, 80)
@@ -56,8 +70,6 @@ def get_player_name(screen, background):
         name_surf = font_input.render(name, True, TEXT_COLOR)
         screen.blit(name_surf, name_surf.get_rect(center=input_rect.center))
 
-        instruction = "Naciśnij ENTER aby zatwierdzić | ESC aby wrócić"
-        inst_surf = font_desc.render(instruction, True, (200, 200, 200))
         screen.blit(inst_surf, inst_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100)))
 
         for event in pygame.event.get():
@@ -93,18 +105,19 @@ def matchmaking_menu(screen, background):
 
     buttons = [btn_random, btn_create, btn_join, btn_back]
 
+    overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 180))
+    title_surf = font_title.render("Wybierz Tryb Gry", True, TEXT_COLOR)
+    title_rect = title_surf.get_rect(center=(WIDTH // 2, 200))
+
     while True:
         if background:
             screen.blit(background, (0, 0))
         else:
             screen.fill(BG_COLOR)
 
-        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 180))
         screen.blit(overlay, (0, 0))
-
-        title_surf = font_title.render("Wybierz Tryb Gry", True, TEXT_COLOR)
-        screen.blit(title_surf, title_surf.get_rect(center=(WIDTH // 2, 200)))
+        screen.blit(title_surf, title_rect)
 
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -134,18 +147,19 @@ def get_room_code_input(screen, background):
     code = ""
     clock = pygame.time.Clock()
 
+    overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 200))
+    prompt_surf = font_desc.render("Wpisz kod pokoju (5 znaków):", True, TEXT_COLOR)
+    prompt_rect = prompt_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))
+
     while True:
         if background:
             screen.blit(background, (0, 0))
         else:
             screen.fill(BG_COLOR)
 
-        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 200))
         screen.blit(overlay, (0, 0))
-
-        prompt_surf = font_desc.render("Wpisz kod pokoju (5 znaków):", True, TEXT_COLOR)
-        screen.blit(prompt_surf, prompt_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100)))
+        screen.blit(prompt_surf, prompt_rect)
 
         input_rect = pygame.Rect(WIDTH // 2 - 200, HEIGHT // 2 - 40, 400, 80)
         pygame.draw.rect(screen, BUTTON_COLOR, input_rect, border_radius=15)
@@ -179,14 +193,15 @@ def waiting_screen(screen, background, net, status_message, room_code=None):
     # Ustawienie socketa na nieblokujący, aby pętla PyGame mogła się kręcić
     net.client.setblocking(False)
 
+    overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 180))
+
     while True:
         if background:
             screen.blit(background, (0, 0))
         else:
             screen.fill(BG_COLOR)
 
-        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 180))
         screen.blit(overlay, (0, 0))
 
         title_surf = font_title.render(status_message, True, TEXT_COLOR)
@@ -263,14 +278,14 @@ def randomize_ships(ships, grid_x, grid_y, cell_size, placed_ships):
     placed_ships.clear()
     for s in ships:
         s.grid_pos = None
-        s.update_to_grid_size()
+        s.update_to_grid_size(cell_size)
 
         placed = False
         attempts = 0
         while not placed and attempts < 200:
             attempts += 1
             s.horizontal = random.choice([True, False])
-            s.update_to_grid_size()
+            s.update_to_grid_size(cell_size)
 
             col = random.randint(0, 9)
             row = random.randint(0, 9)
@@ -345,16 +360,25 @@ def load_spritesheet(filename, rows, cols, target_size, start_frame=0, end_frame
         return []
 
 
-def play_game(screen, p1_name, p2_name, net):
+def play_game(screen, p1_name, p2_name, net, background=None):
     """Ekran fazy rozstawiania statków z mechaniką Drag & Drop i komunikacją z serwerem."""
+    # Próba załadowania specyficznego tła dla fazy rozstawiania
+    try:
+        placement_bg_raw = pygame.image.load("plansza.png").convert() #plansza1os.png
+        placement_bg = pygame.transform.scale(placement_bg_raw, (WIDTH, HEIGHT))
+    except Exception as e:
+        print(f"Nie można załadować plansza1os.png: {e}")
+        placement_bg = background
+
     font_ui = pygame.font.SysFont("arial", 40)
     font_small = pygame.font.SysFont("arial", 30)
     clock = pygame.time.Clock()
 
-    grid_size = 800
-    grid_x = 180
-    grid_y = 160
-    cell_size = grid_size // 10
+    # Synchronizacja wymiarów i pozycji z battle_phase
+    cell_size = 68
+    grid_size = cell_size * 10
+    grid_x = 180 + 30
+    grid_y = 240 + 20
 
     ship_tray_rect = pygame.Rect(WIDTH - 550, 160, 450, 800)
 
@@ -384,17 +408,25 @@ def play_game(screen, p1_name, p2_name, net):
     btn_random = Button(WIDTH - 400, HEIGHT - 250, 300, 60, "LOSUJ", font_small)
     btn_clear = Button(WIDTH - 400, HEIGHT - 180, 300, 60, "WYCZYŚĆ", font_small)
     btn_ready = Button(WIDTH - 400, HEIGHT - 100, 300, 70, "START", font_ui)
+    title_font = pygame.font.SysFont("arial", 50, bold=True)
 
     while True:
         mouse_pos = pygame.mouse.get_pos()
-        screen.fill(BG_COLOR)
+        
+        if placement_bg:
+            screen.blit(placement_bg, (0, 0))
+        elif background:
+            screen.blit(background, (0, 0))
+        else:
+            screen.fill(BG_COLOR)
 
         title_text = f"Faza Rozstawiania: {p1_name}" if not waiting_for_opponent else "Oczekiwanie na przeciwnika..."
-        title_font = pygame.font.SysFont("arial", 50, bold=True)
         title_surf = title_font.render(title_text, True, TEXT_COLOR)
         screen.blit(title_surf, title_surf.get_rect(center=(WIDTH // 2, 60)))
 
-        draw_grid(screen, grid_x, grid_y, grid_size)
+        # Siatka jest już na obrazku tła
+        if not placement_bg:
+            draw_grid(screen, grid_x, grid_y, grid_size)
 
         if not waiting_for_opponent:
             # UI Zasobnika
@@ -411,10 +443,6 @@ def play_game(screen, p1_name, p2_name, net):
             if len(placed_ships) == 9:
                 btn_ready.check_hover(mouse_pos)
                 btn_ready.draw(screen)
-
-            instr = "LPM: Przeciągnij | PPM/R: Obróć | ESC: Wyjście"
-            instr_surf = pygame.font.SysFont("arial", 25).render(instr, True, (180, 180, 180))
-            screen.blit(instr_surf, (grid_x, grid_y + grid_size + 20))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -463,13 +491,16 @@ def play_game(screen, p1_name, p2_name, net):
                         s.offset_y = s.rect.y - mouse_pos[1]
                         if s in placed_ships:
                             placed_ships.remove(s)
-                        s.update_to_grid_size()
+                        # Używamy tej samej mechaniki co w battle_phase: skalujemy do grid_size
+                        s.update_to_grid_size(cell_size)
                         break
 
             # Rotacja PPM
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and not waiting_for_opponent:
                 if dragging_ship:
                     dragging_ship.rotate()
+                    # Po rotacji odświeżamy wymiary (już zawarte w rotate(), ale dla pewności przy dragging_ship)
+                    dragging_ship.update_to_grid_size(cell_size)
                     dragging_ship.offset_x = dragging_ship.rect.x - mouse_pos[0]
                     dragging_ship.offset_y = dragging_ship.rect.y - mouse_pos[1]
                 else:
@@ -480,7 +511,7 @@ def play_game(screen, p1_name, p2_name, net):
 
                             col, row = round((s.rect.x - grid_x) / cell_size), round((s.rect.y - grid_y) / cell_size)
                             s.rotate()
-                            s.update_to_grid_size()
+                            s.update_to_grid_size(cell_size)
 
                             s.rect.x = grid_x + col * cell_size
                             s.rect.y = grid_y + row * cell_size
@@ -541,7 +572,7 @@ def play_game(screen, p1_name, p2_name, net):
                         start_turn = response.get("starting_turn", 0)
 
                         # Przechodzimy płynnie do bitwy z przekazaną listą naszych statków!
-                        return battle_phase(screen, p1_name, p2_name, net, p_idx, start_turn, placed_ships)
+                        return battle_phase(screen, p1_name, p2_name, net, p_idx, start_turn, placed_ships, background)
                     elif response.get("status") == "opponent_disconnected":
                         print("Przeciwnik rozłączony w trakcie oczekiwania.")
                         if net: net.client.setblocking(True)
@@ -564,17 +595,28 @@ def play_game(screen, p1_name, p2_name, net):
         clock.tick(FPS)
 
 
-def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fleet):
+def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fleet, background=None):
     """Główny ekran bitwy. Rysuje dwie plansze, własną flotę i zarządza turami."""
+    # Próba załadowania specyficznego tła dla fazy bitwy
+    is_custom_bg = False
+    try:
+        battle_bg_raw = pygame.image.load("plansza.png").convert()
+        battle_bg = pygame.transform.scale(battle_bg_raw, (WIDTH, HEIGHT))
+        is_custom_bg = True
+    except Exception as e:
+        print(f"Nie można załadować plansza.png: {e}")
+        battle_bg = background
+
     font_title = pygame.font.SysFont("arial", 60, bold=True)
     font_ui = pygame.font.SysFont("arial", 40)
     font_score = pygame.font.SysFont("arial", 30)
     clock = pygame.time.Clock()
 
-    grid_size = 600
-    my_grid_x, my_grid_y = 150, 250
-    enemy_grid_x, enemy_grid_y = WIDTH - grid_size - 150, 250
-    cell_size = grid_size // 10
+    # Nowe wymiary i pozycje dopasowane do plansza.png (Etap 4: +20px prawo, +5px dół)
+    cell_size = 68
+    grid_size = cell_size * 10
+    my_grid_x, my_grid_y = 180 + 30, 240 + 20
+    enemy_grid_x, enemy_grid_y = 990 + 28, 240 + 20
 
     current_turn = initial_turn
 
@@ -605,6 +647,11 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
     winner_name = ""
     btn_back_to_menu = Button(WIDTH // 2 - 200, HEIGHT // 2 + 100, 400, 80, "POWRÓT DO MENU", font_ui)
 
+    # Optymalizacja: alokujemy powierzchnie raz, by nie obciążać GC i CPU (FPS drop fix)
+    display_surface = pygame.Surface((WIDTH, HEIGHT))
+    game_over_overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+    game_over_overlay.fill((0, 0, 0, 200))
+
     while True:
         if shake_timer > 0:
             shake_timer -= 1
@@ -613,8 +660,10 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
         else:
             render_offset = [0, 0]
 
-        display_surface = pygame.Surface((WIDTH, HEIGHT))
-        display_surface.fill(BG_COLOR)
+        if battle_bg:
+            display_surface.blit(battle_bg, (0, 0))
+        else:
+            display_surface.fill(BG_COLOR)
 
         mouse_pos = pygame.mouse.get_pos()
 
@@ -625,13 +674,7 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
         turn_surf = font_title.render(turn_text, True, turn_color)
         display_surface.blit(turn_surf, turn_surf.get_rect(center=(WIDTH // 2, 80)))
 
-        my_label = font_ui.render("TWOJA FLOTA", True, TEXT_COLOR)
-        display_surface.blit(my_label, my_label.get_rect(center=(my_grid_x + grid_size // 2, my_grid_y - 80)))
-
-        enemy_label = font_ui.render("FLOTA WROGA", True, TEXT_COLOR)
-        display_surface.blit(enemy_label,
-                             enemy_label.get_rect(center=(enemy_grid_x + grid_size // 2, enemy_grid_y - 80)))
-
+        # Punkty pozostają widoczne (pod planszami)
         my_score_surf = font_score.render(f"Punkty: {my_score}", True, (255, 215, 0))
         display_surface.blit(my_score_surf,
                              my_score_surf.get_rect(center=(my_grid_x + grid_size // 2, my_grid_y + grid_size + 40)))
@@ -640,9 +683,6 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
         display_surface.blit(enemy_score_surf,
                              enemy_score_surf.get_rect(
                                  center=(enemy_grid_x + grid_size // 2, enemy_grid_y + grid_size + 40)))
-
-        draw_grid(display_surface, my_grid_x, my_grid_y, grid_size)
-        draw_grid(display_surface, enemy_grid_x, enemy_grid_y, grid_size)
 
         for ship in my_fleet:
             col, row = ship.grid_pos
@@ -668,9 +708,9 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
                 hover_x = (mouse_pos[0] - enemy_grid_x) // cell_size
                 hover_y = (mouse_pos[1] - enemy_grid_y) // cell_size
                 if (hover_x, hover_y) not in my_shots_hit and (hover_x, hover_y) not in my_shots_miss:
-                    pygame.draw.rect(display_surface, (255, 255, 255, 100),
+                    pygame.draw.rect(display_surface, (255, 255, 255, 150),
                                      (enemy_grid_x + hover_x * cell_size, enemy_grid_y + hover_y * cell_size, cell_size,
-                                      cell_size), 3)
+                                      cell_size), 5)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -763,9 +803,7 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
                 active_animations.remove(anim)
 
         if game_over:
-            overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-            overlay.fill((0, 0, 0, 200))
-            display_surface.blit(overlay, (0, 0))
+            display_surface.blit(game_over_overlay, (0, 0))
 
             res_text = f"ZWYCIĘZCA: {winner_name}"
             res_color = (255, 215, 0) if winner_name == p1_name else (200, 50, 50)
