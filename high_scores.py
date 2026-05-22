@@ -8,6 +8,9 @@ import options
 
 def show_high_scores(screen, clock, net, background=None):
     """Ekran wyświetlający listę najlepszych 100 wyników z serwerem i sortowaniem."""
+    # Upewniamy się, że gniazdo jest w trybie blokującym (na wypadek wejścia po bitwie)
+    net.client.setblocking(True)
+
     # Zmniejszone czcionki dla lepszej czytelności
     font_title = pygame.font.SysFont("arial", 70, bold=True)
     font_header = pygame.font.SysFont("arial", 28, bold=True)
@@ -60,10 +63,8 @@ def show_high_scores(screen, clock, net, background=None):
     
     def get_sorted_data():
         if current_sort_col == "rank":
-            # Sortowanie po oryginalnej pozycji (z bazy przyszły posortowane po best_score)
             return sorted(raw_data, key=lambda x: raw_data.index(x), reverse=sort_reverse)
         
-        # Znajdź klucz do sortowania
         key = current_sort_col
         return sorted(raw_data, key=lambda x: x.get(key, 0) if isinstance(x.get(key), (int, float)) else x.get(key, "").lower(), reverse=sort_reverse)
 
@@ -71,60 +72,12 @@ def show_high_scores(screen, clock, net, background=None):
     max_scroll = max(0, len(scores_data) * row_height - list_height)
 
     # Cache powierzchni tabeli
-    def create_table_surface(data):
-        surf = pygame.Surface((total_table_width, max(list_height, len(data) * row_height)), pygame.SRCALPHA)
-        for i, row in enumerate(data):
-            y = i * row_height
-            
-            # Kolorowanie
-            rank_in_original = raw_data.index(row) + 1
-            color = TEXT_COLOR
-            bg_alpha = 20
-            
-            if rank_in_original <= 3:
-                color = (255, 215, 0)
-                bg_alpha = 60
-            elif rank_in_original <= 10:
-                color = (200, 200, 200)
-                bg_alpha = 40
-            
-            if i % 2 == 0:
-                pygame.draw.rect(surf, (255, 255, 255, bg_alpha), (0, y, total_table_width, row_height))
-
-            curr_x = 0
-            # Pozycja (oryginalna z bazy)
-            table_surface.blit(font_row.render(str(rank_in_original), True, color), (curr_x + 10, y + 5))
-            curr_x += cols[0]["width"]
-            
-            # Nick
-            name_text = row["username"]
-            if len(name_text) > 20: name_text = name_text[:17] + "..."
-            table_surface.blit(font_row.render(name_text, True, color), (curr_x + 10, y + 5))
-            curr_x += cols[1]["width"]
-
-            # Wynik
-            table_surface.blit(font_row.render(str(row["best_score"]), True, color), (curr_x + 10, y + 5))
-            curr_x += cols[2]["width"]
-
-            # Wygrane
-            table_surface.blit(font_row.render(str(row["wins"]), True, (100, 255, 100)), (curr_x + 10, y + 5))
-            curr_x += cols[3]["width"]
-
-            # Przegrane
-            table_surface.blit(font_row.render(str(row["losses"]), True, (255, 100, 100)), (curr_x + 10, y + 5))
-            curr_x += cols[4]["width"]
-
-            # Średnia
-            table_surface.blit(font_row.render(f"{row['avg_points']:.2f}", True, (150, 200, 255)), (curr_x + 10, y + 5))
-        return surf
-
     table_surface = pygame.Surface((total_table_width, max(list_height, len(scores_data) * row_height)), pygame.SRCALPHA)
     
     def update_table():
         nonlocal scores_data, table_surface
         scores_data = get_sorted_data()
         table_surface.fill((0, 0, 0, 0))
-        curr_y = 0
         for i, row in enumerate(scores_data):
             y = i * row_height
             rank_in_original = raw_data.index(row) + 1
@@ -137,18 +90,24 @@ def show_high_scores(screen, clock, net, background=None):
                 pygame.draw.rect(table_surface, (255, 255, 255, bg_alpha), (0, y, total_table_width, row_height))
             
             cx = 0
+            # Pozycja
             table_surface.blit(font_row.render(str(rank_in_original), True, color), (cx + 10, y + 5))
             cx += cols[0]["width"]
+            # Nick
             name_txt = row["username"]
             if len(name_txt) > 20: name_txt = name_txt[:17] + "..."
             table_surface.blit(font_row.render(name_txt, True, color), (cx + 10, y + 5))
             cx += cols[1]["width"]
+            # Wynik
             table_surface.blit(font_row.render(str(row["best_score"]), True, color), (cx + 10, y + 5))
             cx += cols[2]["width"]
+            # Wygrane
             table_surface.blit(font_row.render(str(row["wins"]), True, (100, 255, 100)), (cx + 10, y + 5))
             cx += cols[3]["width"]
+            # Przegrane
             table_surface.blit(font_row.render(str(row["losses"]), True, (255, 100, 100)), (cx + 10, y + 5))
             cx += cols[4]["width"]
+            # Średnia
             table_surface.blit(font_row.render(f"{row['avg_points']:.2f}", True, (150, 200, 255)), (cx + 10, y + 5))
 
     update_table()

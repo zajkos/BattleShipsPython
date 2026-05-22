@@ -123,12 +123,24 @@
 - **Aktualizacja Dokumentacji**:
     - Dodano wpis o konfigurowalnych animacjach do `Funkcjonalnosci.md`.
 
-## [2026-05-22] Optymalizacja Płynności i Logiki Rewanżu
-- **Limit FPS (`options.py`, wszystkie ekrany)**:
-    - Dodano możliwość wyboru limitu klatek na sekundę: 30, 60, 120, 144, 240 lub 360 FPS.
-    - Ustawienie jest globalne i wpływa na wszystkie pętle gry, co pozwala na oszczędność zasobów na słabszych maszynach lub pełne wykorzystanie szybkich monitorów.
-- **Rewanż po Poddaniu (`game.py`, `server.py`)**:
-    - Przebudowano logikę przycisku "Poddaj się". Zamiast natychmiastowego wyjścia do menu, gracz wysyła sygnał poddania i czeka na ekran końca gry.
-    - Dzięki temu obie strony (zarówno zwycięzca, jak i osoba poddająca się) mogą teraz skorzystać z systemu rewanżu i zagrać ponownie bez przerywania sesji.
+## [2026-05-22] Profesjonalny Overhaul Menu Ustawień i Poprawka Poddania
+- **Interaktywny Suwak Głośności (`options.py`)**:
+    - Zaimplementowano w pełni funkcjonalny, przesuwalny suwak głośności muzyki.
+    - Obsługa kliknięcia w dowolnym miejscu paska oraz przeciągania myszą dla płynnej regulacji.
+- **Usprawnione Przełączniki (Toggles)**:
+    - Zastąpiono stare przyciski dedykowanymi wierszami ustawień z przyciskami "ZMIEŃ".
+    - Wyraźne oznaczenia stanów: zielone "TAK" / czerwone "NIE" dla lepszej czytelności.
+- **Zaawansowane Sterowanie FPS**:
+    - Dodano tryb "BEZ LIMITU" (MAX) dla najwyższej możliwej wydajności.
+    - Zmieniono sposób wyboru na system nawigacji strzałkami (`<` oraz `>`), eliminując konieczność wielokrotnego klikania jednego przycisku.
+- **Poprawka Rewanżu po Poddaniu (`server.py`)**:
+    - Naprawiono błąd, przez który osoba poddająca się nie trafiała na ekran końca gry. Serwer wysyła teraz sygnał `game_over` do obu graczy i utrzymuje połączenie, umożliwiając wspólny powrót do gry przez system rewanżu.
+- **Optymalizacja Layoutu**:
+    - Wyśrodkowany, duży panel z elegancką ramką i poprawionymi odstępami.
 - **Aktualizacja Dokumentacji**:
-    - Odnotowano nowe funkcjonalności w `Funkcjonalnosci.md`.
+    - Wszystkie uwagi użytkownika dotyczące wyglądu i interaktywności opcji zostały wdrożone i odnotowane.
+ Applied fuzzy match at line 147-159.
+    - Animacja ma teraz wymiar 1.0x komórki (zamiast 1.8x), dzięki czemu idealnie mieści się wewnątrz pojedynczej kratki pola bitwy i nie przesłania sąsiednich pól.
+- **Bugfix (Indentation)**: Naprawiono błąd składni `IndentationError` w pliku `game.py` przy ładowaniu animacji.
+- **Aktualizacja Dokumentacji**:
+    - Odnotowano wykonanie wszystkich punktów UI/UX w `Funkcjonalnosci.md`.

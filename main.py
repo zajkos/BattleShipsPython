@@ -41,11 +41,12 @@ def preload_assets(screen):
     show_progress("Przygotowywanie animacji...")
     # Pre-renderowanie animacji w standardowych rozmiarach (z game.py)
     cell_size = 68
-    anim_size = (int(cell_size * 1.8), int(cell_size * 1.8))
+    explosion_anim_size = (int(cell_size * 1.8), int(cell_size * 1.8))
+    splash_anim_size = (int(cell_size * 1.0), int(cell_size * 1.0)) # Zmniejszono z 1.8 na 1.0
     smoke_anim_size = (int(cell_size * 1.0), int(cell_size * 1.0))
     
-    game.load_spritesheet("wybuch.png", 6, 8, anim_size)
-    game.load_spritesheet("plusk.png", 6, 8, anim_size)
+    game.load_spritesheet("wybuch.png", 6, 8, explosion_anim_size)
+    game.load_spritesheet("plusk.png", 6, 8, splash_anim_size)
     game.load_spritesheet("smoke.png", 6, 8, smoke_anim_size, start_frame=16, end_frame=40)
 
 # Preload przed wejściem do menu

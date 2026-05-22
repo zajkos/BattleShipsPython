@@ -700,11 +700,14 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
 
     net.client.setblocking(False)
 
-    anim_size = (int(cell_size * 1.8), int(cell_size * 1.8))
+    # Wczytywanie animacji
+    cell_size = 68
+    explosion_anim_size = (int(cell_size * 1.8), int(cell_size * 1.8))
+    splash_anim_size = (int(cell_size * 1.0), int(cell_size * 1.0)) # Zmniejszono, by mieścił się w kratce
     smoke_anim_size = (int(cell_size * 1.0), int(cell_size * 1.0))
 
-    explosion_frames = load_spritesheet("wybuch.png", 6, 8, anim_size)
-    splash_frames = load_spritesheet("plusk2.png", 6, 8, anim_size)
+    explosion_frames = load_spritesheet("wybuch.png", 6, 8, explosion_anim_size)
+    splash_frames = load_spritesheet("plusk2.png", 6, 8, splash_anim_size)
     smoke_frames = load_spritesheet("smoke.png", 6, 8, smoke_anim_size, start_frame=16, end_frame=40)
     active_animations = []
     persistent_effects = []
@@ -935,7 +938,16 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
                     is_paused = False
                     # Pozostajemy w pętli, serwer wyśle game_over
 
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_my_turn and not is_paused and not chat_active:
+            if game_over:
+                if btn_rematch.handle_event(event) and not rematch_requested:
+                    net.send_no_wait({"action": "request_rematch"})
+                    rematch_requested = True
+
+                if btn_back_to_menu.handle_event(event):
+                    net.client.setblocking(True)
+                    return "MENU"
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_my_turn and not is_paused and not chat_active and not game_over:
                 if enemy_grid_x <= mouse_pos[0] <= enemy_grid_x + grid_size and enemy_grid_y <= mouse_pos[
                     1] <= enemy_grid_y + grid_size:
                     click_x = (mouse_pos[0] - enemy_grid_x) // cell_size
@@ -1088,19 +1100,6 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
 
             btn_back_to_menu.check_hover(mouse_pos)
             btn_back_to_menu.draw(display_surface)
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                
-                if btn_rematch.handle_event(event) and not rematch_requested:
-                    net.send_no_wait({"action": "request_rematch"})
-                    rematch_requested = True
-
-                if btn_back_to_menu.handle_event(event) or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                    net.client.setblocking(True)
-                    return "MENU"
 
         screen.blit(display_surface, (render_offset[0], render_offset[1]))
 
