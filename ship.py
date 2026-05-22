@@ -3,6 +3,9 @@ import pygame
 from settings import *
 
 class Ship:
+    # Statyczny cache dla obrazków (wspólny dla wszystkich instancji)
+    _image_cache = {}
+
     def __init__(self, length, color=(100, 100, 100)):
         self.length = length
         self.color = color
@@ -19,15 +22,25 @@ class Ship:
         self.grid_pos = None
         self.initial_pos = (0, 0)
 
-        # Image loading
-        self.image_raw = None
-        try:
-            self.image_raw = pygame.image.load(f"ship_{self.length}.png").convert_alpha()
-        except Exception:
-            # Fallback if image not found
-            self.image_raw = None
-        
+        # Pobieramy obrazek z cache lub ładujemy jeśli go nie ma
+        self.image_raw = self._get_base_image()
         self.image = None
+        self.dragging_image = None
+        
+        # Inicjalne przygotowanie grafiki
+        if self.image_raw:
+            self._update_image()
+
+    def _get_base_image(self):
+        cache_key = f"ship_{self.length}"
+        if cache_key not in Ship._image_cache:
+            try:
+                # Ładowanie z dysku tylko RAZ dla danego typu statku
+                img = pygame.image.load(f"ship_{self.length}.png").convert_alpha()
+                Ship._image_cache[cache_key] = img
+            except Exception:
+                Ship._image_cache[cache_key] = None
+        return Ship._image_cache[cache_key]
 
     def rotate(self):
         """Standardowe przełączenie orientacji (zamiana szerokości i wysokości)."""

@@ -57,3 +57,78 @@
     - **Dalsze Porządki w `game.py`**:
     - Zoptymalizowano ekrany wpisywania nicku, kodu pokoju oraz ekran oczekiwania (`waiting_screen`), usuwając renderowanie tekstu z każdej klatki.
     - **Efekt**: Przywrócono stabilne FPS (zależnie od monitora, do 360 FPS) oraz wyeliminowano "zamrożenia" przy losowaniu statków.
+
+## [2026-05-22] Optymalizacja Zasobów i Eliminacja "Micro-Stuttering"
+- **Problem**: Krótkie przycięcia podczas pierwszego losowania statków oraz przy przechodzeniu między ekranami (fazy ładowania plików z dysku).
+- **Zastosowane Rozwiązania**:
+    - **Globalny Asset Preloading (`main.py`)**: Wprowadzono funkcję `preload_assets`, która przy uruchomieniu gry wczytuje wszystkie statki i ciężkie spritesheety animacji do pamięci RAM. Dzięki temu w trakcie rozgrywki nie występuje już odczyt I/O z dysku.
+    - **Static Image Cache (`ship.py`)**: Klasa `Ship` otrzymała statyczny słownik `_image_cache`. Każdy model statku (1, 2, 3, 4) jest teraz ładowany i konwertowany (`.convert_alpha()`) tylko raz na całą sesję aplikacji, niezależnie od liczby stworzonych obiektów.
+    - **Animation Cache (`game.py`)**: Funkcja `load_spritesheet` została rozszerzona o mechanizm cache'owania. Wycięte klatki animacji (wybuchy, pluski, dym) są przechowywane w pamięci i współdzielone, co drastycznie przyspiesza start fazy bitwy.
+    - **Optymalizacja I/O**: Wszystkie obrazy są teraz ładowane z użyciem `.convert_alpha()` raz w fazie pre-loadingu, co eliminuje konieczność konwersji formatu pikseli przez procesor w trakcie renderowania klatek.
+    - **Poprawka Widoczności**: Naprawiono błąd, przez który statki pojawiały się jako szare kwadraty przed pierwszą interakcją, wymuszając odświeżenie grafiki zaraz po utworzeniu obiektu.
+    - **Normalizacja Animacji**: Skorygowano logikę `AnimationEffect`, wprowadzając przelicznik prędkości zależny od globalnego `FPS`. Dzięki temu animacje wybuchów i plusków odtwarzane są w tempie odpowiadającym 60 FPS, nawet gdy gra działa w 360 FPS.
+- **Efekt**: Całkowita eliminacja "pierwszego laga" przy losowaniu oraz płynne przejścia między wszystkimi ekranami gry.
+
+## [2026-05-22] Wdrożenie Kluczowych Funkcjonalności Gameplayu
+- **Trafiony-Zatopiony (`server.py`, `game.py`)**:
+    - Serwer rozpoznaje teraz całkowite zniszczenie statku i przesyła listę jego komórek (`sunk_cells`).
+    - Klient wizualnie oznacza zatopione statki wroga czerwonym tłem na planszy.
+    - Wprowadzono premię punktową za zatopienie całego statku (zależną od jego długości).
+- **Turn Timer (`server.py`, `game.py`)**:
+    - Dodano globalny wątek serwera monitorujący czas ruchu (30 sekund).
+    - Klient wyświetla dynamiczny licznik czasu pozostałego do końca tury.
+    - Po upływie czasu tura automatycznie przechodzi na przeciwnika (`turn_timeout`).
+- **System Rewanżu (`server.py`, `game.py`)**:
+    - Na ekranie końca gry dodano przycisk "REWANŻ".
+    - Zaimplementowano logikę głosowania (wymagane 2/2 głosy) – po zaakceptowaniu gra wraca do fazy rozstawiania bez wychodzenia do menu.
+- **Optymalizacje UI (`button.py`)**:
+    - Rozszerzono klasę `Button` o możliwość dynamicznej zmiany tekstu z automatycznym odświeżaniem cache'u graficznego.
+- **Dokumentacja**:
+    - Utworzono plik `Funkcjonalnosci.md` z opisem przyszłych planów rozwoju.
+
+## [2026-05-22] Rozbudowa UI/UX i Komunikacji
+- **System Czatu (`server.py`, `game.py`)**:
+    - Zaimplementowano w pełni funkcjonalny czat tekstowy w trakcie bitwy.
+    - Dodano obsługę klawisza 'T' do aktywacji okna wpisywania wiadomości.
+    - Serwer przesyła wiadomości między graczami, a ważne komunikaty systemowe (timeout, prośba o rewanż) są wyświetlane bezpośrednio w logu czatu.
+- **Menu Pauzy (`game.py`)**:
+    - Dodano nakładkę (overlay) pod klawiszem ESC, pozwalającą na kontynuację gry, przejście do opcji lub poddanie się (powrót do menu).
+    - Gra wizualnie wstrzymuje licznik czasu tury podczas aktywnej pauzy.
+- **Wizualny Celownik (Crosshair) (`game.py`)**:
+    - Zastąpiono prostą białą obwódkę dynamicznym, animowanym celownikiem z białymi rogami i czerwoną ramką, co znacznie poprawia precyzję i odczucia z celowania.
+- **Aktualizacja Dokumentacji**:
+    - Plik `Funkcjonalnosci.md` został zaktualizowany o status wdrożonych ulepszeń.
+
+## [2026-05-22] Udoskonalenie Sieci i Systemu Matchmakingu
+- **Obsługa Rozłączeń i Walkowery (`server.py`)**:
+    - Zaimplementowano mechanizm karania za ucieczkę z gry (Disconnect Penalty). Jeśli gracz zamknie okno lub straci połączenie w trakcie aktywnej bitwy, serwer automatycznie przyznaje zwycięstwo przeciwnikowi.
+    - Wynik walkowera jest teraz poprawnie zapisywany w bazie danych PostgreSQL (tabele `matches` i `scores`), co zapobiega unikaniu strat w rankingu.
+- **Izolacja Pokojów Prywatnych (`server.py`)**:
+    - Wprowadzono flagę `is_private` do stanu gry. Pokoje tworzone ręcznie kodem są teraz oznaczane jako prywatne.
+    - Matchmaking "Szybkiej gry" korzysta teraz z odseparowanej logiki, co eliminuje ryzyko przypadkowego dołączenia postronnych osób do prywatnych rozgrywek.
+- **Poprawka Krytyczna (Turn Timer)**: Naprawiono błąd `module 'pygame.time' has no attribute 'get_time'`, który powodował zawieszanie się gry na ekranie oczekiwania przy starcie bitwy. Zastąpiono błędne wywołania poprawną metodą `pygame.time.get_ticks()`.
+- **Poprawka Krytyczna (Surrender Logic)**: Zaimplementowano pełną obsługę poddawania się. Wcześniej przycisk "Poddaj się" tylko wyrzucał gracza do menu, zostawiając przeciwnika w zawieszeniu. Teraz wysyłana jest akcja `surrender`, serwer automatycznie przyznaje zwycięstwo drugiemu graczowi, zapisuje wynik w bazie i powiadamia go o poddaniu się przeciwnika.
+- **Bugfix (Indentation)**: Naprawiono błąd składni `IndentationError` w pliku `game.py` powstały przy implementacji obsługi rewanżu.
+- **Aktualizacja Dokumentacji**:
+    - Wszystkie punkty z kategorii "Sieć i Serwer" w pliku `Funkcjonalnosci.md` zostały oznaczone jako wykonane.
+
+## [2026-05-22] Zarządzanie Efektami Wizualnymi
+- **Konfigurowalne Animacje (`options.py`, `game.py`)**:
+    - Wprowadzono szczegółowe ustawienia efektów graficznych w menu opcji.
+    - Gracze mogą teraz niezależnie włączać i wyłączać: Wybuchy (Explosions), Pluski wody (Splash) oraz Dym (Smoke).
+    - Zgodnie z preferencjami, animacja dymu (najbardziej obciążająca wizualnie) została domyślnie wyłączona.
+    - Wybuchy i pluski pozostają domyślnie włączone dla zachowania dynamiki walki.
+- **Logika Bitwy**:
+    - Faza bitwy dynamicznie sprawdza stan ustawień w `options.py` przed wygenerowaniem każdego efektu.
+- **Aktualizacja Dokumentacji**:
+    - Dodano wpis o konfigurowalnych animacjach do `Funkcjonalnosci.md`.
+
+## [2026-05-22] Optymalizacja Płynności i Logiki Rewanżu
+- **Limit FPS (`options.py`, wszystkie ekrany)**:
+    - Dodano możliwość wyboru limitu klatek na sekundę: 30, 60, 120, 144, 240 lub 360 FPS.
+    - Ustawienie jest globalne i wpływa na wszystkie pętle gry, co pozwala na oszczędność zasobów na słabszych maszynach lub pełne wykorzystanie szybkich monitorów.
+- **Rewanż po Poddaniu (`game.py`, `server.py`)**:
+    - Przebudowano logikę przycisku "Poddaj się". Zamiast natychmiastowego wyjścia do menu, gracz wysyła sygnał poddania i czeka na ekran końca gry.
+    - Dzięki temu obie strony (zarówno zwycięzca, jak i osoba poddająca się) mogą teraz skorzystać z systemu rewanżu i zagrać ponownie bez przerywania sesji.
+- **Aktualizacja Dokumentacji**:
+    - Odnotowano nowe funkcjonalności w `Funkcjonalnosci.md`.

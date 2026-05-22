@@ -12,6 +12,13 @@ class Button:
         self.text_surf = self.font.render(self.text, True, TEXT_COLOR)
         self.text_rect = self.text_surf.get_rect(center=self.rect.center)
 
+    def __setattr__(self, name, value):
+        super().__setattr__(name, value)
+        # Jeśli zmieniamy tekst, odświeżamy cache powierzchni
+        if name == "text" and hasattr(self, 'font'):
+            self.text_surf = self.font.render(self.text, True, TEXT_COLOR)
+            self.text_rect = self.text_surf.get_rect(center=self.rect.center)
+
     def draw(self, surface):
         # Wybór koloru w zależności od tego, czy myszka najechała na przycisk
         color = BUTTON_HOVER_COLOR if self.is_hovered else BUTTON_COLOR

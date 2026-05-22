@@ -2,6 +2,7 @@ import pygame
 import sys
 from settings import *
 from button import Button
+import options
 
 
 def show_credits(screen, clock, background=None):
@@ -80,4 +81,4 @@ def show_credits(screen, clock, background=None):
         btn_back.draw(screen)
 
         pygame.display.update()
-        clock.tick(FPS)
+        clock.tick(options.current_fps)

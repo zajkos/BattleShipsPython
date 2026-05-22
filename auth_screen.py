@@ -2,6 +2,7 @@ import pygame
 import sys
 import re
 from settings import *
+import options
 from button import Button, ImageButton
 
 
@@ -159,4 +160,4 @@ def show_auth_screen(screen, clock, net, background=None):
             btn.draw(screen)
 
         pygame.display.update()
-        clock.tick(FPS)
+        clock.tick(options.current_fps)

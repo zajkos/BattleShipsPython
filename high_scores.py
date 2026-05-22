@@ -4,6 +4,7 @@ import sys
 import json
 from settings import *
 from button import Button
+import options
 
 def show_high_scores(screen, clock, net, background=None):
     """Ekran wyświetlający listę najlepszych 100 wyników z serwerem i sortowaniem."""
@@ -290,4 +291,4 @@ def show_high_scores(screen, clock, net, background=None):
         btn_back.check_hover(mouse_pos)
         btn_back.draw(screen)
         pygame.display.update()
-        clock.tick(FPS)
+        clock.tick(options.current_fps)

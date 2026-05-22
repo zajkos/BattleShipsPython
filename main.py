@@ -10,6 +10,8 @@ from auth_screen import show_auth_screen
 from audio_manager import init_audio
 from network import Network
 from high_scores import show_high_scores
+from ship import Ship
+import options
 
 # Inicjalizacja Pygame
 pygame.init()
@@ -21,6 +23,33 @@ init_audio()
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
 pygame.display.set_caption("Statki - Menu Główne")
 clock = pygame.time.Clock()
+
+def preload_assets(screen):
+    """Pre-load ciężkich zasobów, aby uniknąć przycięć w trakcie gry."""
+    font_loading = pygame.font.SysFont("arial", 30)
+    
+    def show_progress(text):
+        screen.fill((20, 20, 30))
+        txt = font_loading.render(text, True, (200, 200, 200))
+        screen.blit(txt, txt.get_rect(center=(WIDTH // 2, HEIGHT // 2)))
+        pygame.display.flip()
+
+    show_progress("Ładowanie floty...")
+    for length in [1, 2, 3, 4]:
+        Ship(length) # To wywoła ładowanie do _image_cache w klasie Ship
+
+    show_progress("Przygotowywanie animacji...")
+    # Pre-renderowanie animacji w standardowych rozmiarach (z game.py)
+    cell_size = 68
+    anim_size = (int(cell_size * 1.8), int(cell_size * 1.8))
+    smoke_anim_size = (int(cell_size * 1.0), int(cell_size * 1.0))
+    
+    game.load_spritesheet("wybuch.png", 6, 8, anim_size)
+    game.load_spritesheet("plusk.png", 6, 8, anim_size)
+    game.load_spritesheet("smoke.png", 6, 8, smoke_anim_size, start_frame=16, end_frame=40)
+
+# Preload przed wejściem do menu
+preload_assets(screen)
 
 font_title = pygame.font.SysFont("arial", 120, bold=True)
 font_button = pygame.font.SysFont("arial", 50)
@@ -124,7 +153,7 @@ def main_menu(player_name, net, background_image):
             btn.draw(screen)
 
         pygame.display.update()
-        clock.tick(FPS)
+        clock.tick(options.current_fps)
 
 
 if __name__ == "__main__":
