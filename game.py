@@ -4,7 +4,7 @@ import sys
 import json
 import random
 from settings import *
-from button import Button
+from button import Button, ImageButton
 from audio_manager import play_sfx
 import options
 
@@ -105,13 +105,15 @@ def matchmaking_menu(screen, background):
     font_title = pygame.font.SysFont("arial", 80, bold=True)
     clock = pygame.time.Clock()
 
-    btn_w, btn_h = 450, 80
+    btn_w = 320
     start_x = WIDTH // 2 - btn_w // 2
+    start_y = 350
+    spacing = 110
 
-    btn_random = Button(start_x, 400, btn_w, btn_h, "Szybka Gra", font_button)
-    btn_create = Button(start_x, 520, btn_w, btn_h, "Stwórz Pokój", font_button)
-    btn_join = Button(start_x, 640, btn_w, btn_h, "Dołącz do Pokoju", font_button)
-    btn_back = Button(start_x, 760, btn_w, btn_h, "Powrót", font_button)
+    btn_random = ImageButton(start_x, start_y, "szybka gra.png", width=btn_w)
+    btn_create = ImageButton(start_x, start_y + spacing, "stwórz pokój.png", width=btn_w)
+    btn_join = ImageButton(start_x, start_y + spacing * 2, "dołącz do pokoju.png", width=btn_w)
+    btn_back = ImageButton(WIDTH // 2 - 110, start_y + spacing * 3, "powrót.png", width=220)
 
     buttons = [btn_random, btn_create, btn_join, btn_back]
 
@@ -419,22 +421,23 @@ def play_game(screen, p1_name, p2_name, net, background=None):
     grid_x = 180 + 30
     grid_y = 240 + 20
 
-    ship_tray_rect = pygame.Rect(WIDTH - 550, 160, 450, 800)
+    # Nowy, większy zasobnik zakrywający prawą planszę
+    ship_tray_rect = pygame.Rect(960, 150, 880, 860)
 
     # Inicjalizacja floty (1x4, 2x3, 2x2, 4x1) -> Łącznie 9 statków
     lengths = [4, 3, 3, 2, 2, 1, 1, 1, 1]
     ships = []
 
-    # Rozmieszczenie statków w zasobniku
-    current_y = ship_tray_rect.top + 80
+    # Rozmieszczenie statków w zasobniku (wyśrodkowane w nowym szerokim panelu)
+    current_y = ship_tray_rect.top + 40
     for length in lengths:
         s = Ship(length, color=(70, 130, 180))
-        s.update_to_tray_size()
+        s.update_to_tray_size(scale=0.9)
         s.rect.centerx = ship_tray_rect.centerx
         s.rect.y = current_y
         s.initial_pos = (s.rect.x, s.rect.y)
         ships.append(s)
-        current_y += (cell_size // 2) + 20
+        current_y += int(cell_size * 0.9) + 12
 
     dragging_ship = None
     placed_ships = []
@@ -443,16 +446,16 @@ def play_game(screen, p1_name, p2_name, net, background=None):
     if net:
         net.client.setblocking(False)
 
-    # Przyciski pomocnicze
-    btn_random = Button(WIDTH - 400, HEIGHT - 250, 300, 60, "LOSUJ", font_small)
-    btn_clear = Button(WIDTH - 400, HEIGHT - 180, 300, 60, "WYCZYŚĆ", font_small)
-    btn_ready = Button(WIDTH - 400, HEIGHT - 100, 300, 70, "START", font_ui)
+    # Przyciski pomocnicze - ułożone na dole panelu
+    bw = 260
+    spacing_btn = 290
+    btn_start_x = ship_tray_rect.x + (ship_tray_rect.width - (bw * 3 + 40)) // 2 + 130
+    
+    btn_random = ImageButton(ship_tray_rect.centerx - 410, ship_tray_rect.bottom - 100, "losuj.png", width=bw)
+    btn_clear = ImageButton(ship_tray_rect.centerx - 130, ship_tray_rect.bottom - 100, "wyczyść.png", width=bw)
+    btn_ready = ImageButton(ship_tray_rect.centerx + 150, ship_tray_rect.bottom - 100, "S T A R T.png", width=bw)
     title_font = pygame.font.SysFont("arial", 50, bold=True)
 
-    # Pre-renderowanie etykiet UI
-    tray_label_surf = font_ui.render("TWOJA FLOTA", True, TEXT_COLOR)
-    tray_label_rect = tray_label_surf.get_rect(center=(ship_tray_rect.centerx, ship_tray_rect.top + 30))
-    
     last_waiting_status = None
     title_surf = None
     title_rect = None
@@ -483,10 +486,9 @@ def play_game(screen, p1_name, p2_name, net, background=None):
             draw_grid(screen, grid_x, grid_y, grid_size)
 
         if not waiting_for_opponent:
-            # UI Zasobnika
-            pygame.draw.rect(screen, (40, 40, 60), ship_tray_rect, border_radius=15)
-            pygame.draw.rect(screen, GRID_COLOR, ship_tray_rect, width=2, border_radius=15)
-            screen.blit(tray_label_surf, tray_label_rect)
+            # UI Zasobnika - ciemnoszary z grubą złotą ramką
+            pygame.draw.rect(screen, (45, 45, 45), ship_tray_rect, border_radius=15)
+            pygame.draw.rect(screen, BUTTON_HOVER_COLOR, ship_tray_rect, width=5, border_radius=15)
 
             btn_random.check_hover(mouse_pos)
             btn_random.draw(screen)
@@ -531,7 +533,7 @@ def play_game(screen, p1_name, p2_name, net, background=None):
                     placed_ships.clear()
                     for s in ships:
                         s.grid_pos = None
-                        s.update_to_tray_size()
+                        s.update_to_tray_size(scale=0.9)
                         s.rect.x, s.rect.y = s.initial_pos
                     continue
 
@@ -700,11 +702,14 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
 
     net.client.setblocking(False)
 
-    anim_size = (int(cell_size * 1.8), int(cell_size * 1.8))
+    # Wczytywanie animacji
+    cell_size = 68
+    explosion_anim_size = (int(cell_size * 1.8), int(cell_size * 1.8))
+    splash_anim_size = (int(cell_size * 1.0), int(cell_size * 1.0)) # Zmniejszono, by mieścił się w kratce
     smoke_anim_size = (int(cell_size * 1.0), int(cell_size * 1.0))
 
-    explosion_frames = load_spritesheet("wybuch.png", 6, 8, anim_size)
-    splash_frames = load_spritesheet("plusk2.png", 6, 8, anim_size)
+    explosion_frames = load_spritesheet("wybuch.png", 6, 8, explosion_anim_size)
+    splash_frames = load_spritesheet("plusk2.png", 6, 8, splash_anim_size)
     smoke_frames = load_spritesheet("smoke.png", 6, 8, smoke_anim_size, start_frame=16, end_frame=40)
     active_animations = []
     persistent_effects = []
@@ -718,8 +723,10 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
     last_game_over_state = False
     res_surf = None
     res_rect = None
-    btn_back_to_menu = Button(WIDTH // 2 - 200, HEIGHT // 2 + 150, 400, 80, "POWRÓT DO MENU", font_ui)
-    btn_rematch = Button(WIDTH // 2 - 200, HEIGHT // 2 + 50, 400, 80, "REWANŻ", font_ui)
+    score_surf = None
+    score_rect = None
+    btn_back_to_menu = ImageButton(WIDTH // 2 - 110, HEIGHT // 2 + 180, "powrot do menu.png", width=220)
+    btn_rematch = ImageButton(WIDTH // 2 - 160, HEIGHT // 2 + 70, "RWEANŻ.png", width=320)
     rematch_requested = False
     opponent_requested_rematch = False
 
@@ -760,9 +767,15 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
     is_paused = False
     pause_overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
     pause_overlay.fill((0, 0, 0, 150))
-    btn_pause_resume = Button(WIDTH // 2 - 200, HEIGHT // 2 - 120, 400, 80, "KONTYNUUJ", font_ui)
-    btn_pause_options = Button(WIDTH // 2 - 200, HEIGHT // 2 - 20, 400, 80, "OPCJE", font_ui)
-    btn_pause_quit = Button(WIDTH // 2 - 200, HEIGHT // 2 + 80, 400, 80, "PODDAJ SIĘ", font_ui)
+    
+    btn_w = 320
+    start_x = WIDTH // 2 - btn_w // 2
+    start_y = HEIGHT // 2 - 150
+    spacing = 110
+    
+    btn_pause_resume = ImageButton(start_x, start_y, "kontynuuj.png", width=btn_w)
+    btn_pause_options = ImageButton(WIDTH // 2 - 140, start_y + spacing, "opcje.png", width=280)
+    btn_pause_quit = ImageButton(WIDTH // 2 - 110, start_y + spacing * 2, "wyjście.png", width=220)
 
     net_buffer = ""
 
@@ -933,9 +946,20 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
                 if btn_pause_quit.handle_event(event):
                     net.send_no_wait({"action": "surrender"})
                     is_paused = False
-                    # Pozostajemy w pętli, serwer wyśle game_over
 
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_my_turn and not is_paused and not chat_active:
+            if game_over:
+                btn_rematch.check_hover(mouse_pos)
+                btn_back_to_menu.check_hover(mouse_pos)
+                
+                if btn_rematch.handle_event(event) and not rematch_requested:
+                    net.send_no_wait({"action": "request_rematch"})
+                    rematch_requested = True
+
+                if btn_back_to_menu.handle_event(event):
+                    net.client.setblocking(True)
+                    return "MENU"
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and is_my_turn and not is_paused and not chat_active and not game_over:
                 if enemy_grid_x <= mouse_pos[0] <= enemy_grid_x + grid_size and enemy_grid_y <= mouse_pos[
                     1] <= enemy_grid_y + grid_size:
                     click_x = (mouse_pos[0] - enemy_grid_x) // cell_size
@@ -1028,6 +1052,10 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
                             elif response.get("status") == "game_over":
                                 game_over = True
                                 winner_name = response.get("winner")
+                                if "final_scores" in response:
+                                    f_scores = response["final_scores"]
+                                    my_score = f_scores[player_idx]
+                                    enemy_score = f_scores[1 - player_idx]
                                 # Wyświetlamy opcjonalną wiadomość systemową (np. o poddaniu się)
                                 if response.get("message"):
                                     chat_log.append(f"SYSTEM: {response.get('message')}")
@@ -1075,32 +1103,18 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
                 res_text = f"ZWYCIĘZCA: {winner_name}"
                 res_color = (255, 215, 0) if winner_name == p1_name else (200, 50, 50)
                 res_surf = font_title.render(res_text, True, res_color)
-                res_rect = res_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+                res_rect = res_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))
+
+                score_text = f"Twoje punkty: {my_score} | Przeciwnik ({p2_name}): {enemy_score}"
+                score_surf = font_ui.render(score_text, True, TEXT_COLOR)
+                score_rect = score_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 20))
             
             display_surface.blit(res_surf, res_rect)
+            if score_surf:
+                display_surface.blit(score_surf, score_rect)
 
-            btn_rematch.check_hover(mouse_pos)
-            if rematch_requested:
-                btn_rematch.text = "OCZEKIWANIE..."
-            elif opponent_requested_rematch:
-                btn_rematch.text = "REWANŻ (1/2)!"
             btn_rematch.draw(display_surface)
-
-            btn_back_to_menu.check_hover(mouse_pos)
             btn_back_to_menu.draw(display_surface)
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                
-                if btn_rematch.handle_event(event) and not rematch_requested:
-                    net.send_no_wait({"action": "request_rematch"})
-                    rematch_requested = True
-
-                if btn_back_to_menu.handle_event(event) or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                    net.client.setblocking(True)
-                    return "MENU"
 
         screen.blit(display_surface, (render_offset[0], render_offset[1]))
 

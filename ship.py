@@ -99,13 +99,10 @@ class Ship:
         self.rect.height = target_h
         self._update_image()
 
-    def update_to_tray_size(self):
-        target_w = self.length * (self.cell_size // 2)
-        target_h = self.cell_size // 2
+    def update_to_tray_size(self, scale=0.8):
+        target_w = int(self.length * (self.cell_size * scale))
+        target_h = int(self.cell_size * scale)
         
-        if self.rect.width == target_w and self.rect.height == target_h and self.horizontal:
-            return
-
         self.horizontal = True # Zawsze poziomo w zasobniku
         self.rect.width = target_w
         self.rect.height = target_h

@@ -123,12 +123,14 @@
 - **Aktualizacja Dokumentacji**:
     - Dodano wpis o konfigurowalnych animacjach do `Funkcjonalnosci.md`.
 
-## [2026-05-22] Optymalizacja Płynności i Logiki Rewanżu
-- **Limit FPS (`options.py`, wszystkie ekrany)**:
-    - Dodano możliwość wyboru limitu klatek na sekundę: 30, 60, 120, 144, 240 lub 360 FPS.
-    - Ustawienie jest globalne i wpływa na wszystkie pętle gry, co pozwala na oszczędność zasobów na słabszych maszynach lub pełne wykorzystanie szybkich monitorów.
-- **Rewanż po Poddaniu (`game.py`, `server.py`)**:
-    - Przebudowano logikę przycisku "Poddaj się". Zamiast natychmiastowego wyjścia do menu, gracz wysyła sygnał poddania i czeka na ekran końca gry.
-    - Dzięki temu obie strony (zarówno zwycięzca, jak i osoba poddająca się) mogą teraz skorzystać z systemu rewanżu i zagrać ponownie bez przerywania sesji.
+## [2026-05-22] Pełne Przywrócenie Oryginalnej Estetyki
+- **Całkowity Revert Graficzny**:
+    - Usunięto wszystkie panele "Glass Card", suwaki i strzałki wyboru z menu głównego, logowania oraz opcji.
+    - Przywrócono oryginalne przyciski graficzne (`ImageButton`) tam, gdzie były pierwotnie (Logowanie, Rejestracja, Wyjście w menu głównym).
+    - Przywrócono tekstowe przyciski (`Button`) dla pozostałych opcji menu głównego (Graj, Top Wyniki, Opcje, Twórcy) oraz dla całego menu Opcji.
+    - Przywrócono oryginalne kolory pól `InputBox` (`lightskyblue3`, `dodgerblue2`) i prosty sposób rysowania obramowań.
+- **Zachowanie Stabilności i Funkcji**:
+    - Mimo powrotu do starego wyglądu, zachowano: profesjonalny bufor sieciowy, system rewanżów, logikę walkowerów, limit FPS (obsługiwany teraz jednym przyciskiem cyklicznym) oraz przełączniki animacji.
 - **Aktualizacja Dokumentacji**:
-    - Odnotowano nowe funkcjonalności w `Funkcjonalnosci.md`.
+    - `Funkcjonalnosci.md` pozostaje aktualny – gra posiada wszystkie nowe funkcje, ale w oprawie graficznej zgodnej z oryginalną wizją użytkownika.
+ Applied fuzzy match at line 181-190.

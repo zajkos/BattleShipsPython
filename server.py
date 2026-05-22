@@ -539,19 +539,29 @@ def handle_client(conn, player_id):
                                 logging.error(f"Błąd zapisu poddania: {db_e}")
                                 if db_conn: db_conn.rollback()
 
-                            over_msg = json.dumps({
+                            # Wiadomość dla zwycięzcy
+                            msg_to_opp = json.dumps({
                                 "status": "game_over",
                                 "winner": opponent["username"],
                                 "final_scores": room["scores"],
                                 "message": f"Przeciwnik ({username}) poddał się!"
                             })
+                            # Wiadomość dla przegranego
+                            msg_to_self = json.dumps({
+                                "status": "game_over",
+                                "winner": opponent["username"],
+                                "final_scores": room["scores"],
+                                "message": "Poddałeś się."
+                            })
+                            
                             try:
-                                opponent["conn"].sendall(str.encode(over_msg))
+                                opponent["conn"].sendall(str.encode(msg_to_opp))
+                                conn.sendall(str.encode(msg_to_self))
                             except:
                                 pass
                         
-                        # Pokój zostanie usunięty w bloku finally po wyjściu gracza z pętli
-                        break
+                        # Kontynuujemy pętlę, aby umożliwić rewanż
+                        continue
 
     except Exception as e:
         logging.error(f"Błąd połączenia klienta (ID:{player_id}): {e}")

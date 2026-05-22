@@ -41,11 +41,12 @@ def preload_assets(screen):
     show_progress("Przygotowywanie animacji...")
     # Pre-renderowanie animacji w standardowych rozmiarach (z game.py)
     cell_size = 68
-    anim_size = (int(cell_size * 1.8), int(cell_size * 1.8))
+    explosion_anim_size = (int(cell_size * 1.8), int(cell_size * 1.8))
+    splash_anim_size = (int(cell_size * 1.0), int(cell_size * 1.0))
     smoke_anim_size = (int(cell_size * 1.0), int(cell_size * 1.0))
     
-    game.load_spritesheet("wybuch.png", 6, 8, anim_size)
-    game.load_spritesheet("plusk.png", 6, 8, anim_size)
+    game.load_spritesheet("wybuch.png", 6, 8, explosion_anim_size)
+    game.load_spritesheet("plusk.png", 6, 8, splash_anim_size)
     game.load_spritesheet("smoke.png", 6, 8, smoke_anim_size, start_frame=16, end_frame=40)
 
 # Preload przed wejściem do menu
@@ -63,22 +64,19 @@ def draw_text(text, font, color, surface, x, y):
 
 def main_menu(player_name, net, background_image):
     """Główne menu uruchamiane po pomyślnym zalogowaniu."""
-    btn_width, btn_height = 450, 80
+    btn_width = 320
     start_x = WIDTH // 2 - btn_width // 2
-    start_y = 350
-    spacing = 100
+    start_y = 400
+    spacing = 110
 
-    btn_play = Button(start_x, start_y, btn_width, btn_height, "Graj", font_button)
-    btn_scores = Button(start_x, start_y + spacing, btn_width, btn_height, "Top Wyniki", font_button)
-    btn_options = Button(start_x, start_y + spacing * 2, btn_width, btn_height, "Opcje", font_button)
-    btn_credits = Button(start_x, start_y + spacing * 3, btn_width, btn_height, "Twórcy", font_button)
-    # Proporcjonalny przycisk wyjścia (szerokość mniejsza niż prostokąty, by nie był gigantyczny)
-    btn_exit = ImageButton(WIDTH // 2 - 165, start_y + spacing * 4 - 20, "wyjście (1).png", width=330)
+    btn_play = ImageButton(start_x, start_y, "graj.png", width=btn_width)
+    btn_scores = ImageButton(start_x, start_y + spacing, "top wyniki.png", width=btn_width)
+    btn_options = ImageButton(WIDTH // 2 - 140, start_y + spacing * 2, "opcje.png", width=280)
+    btn_credits = ImageButton(start_x, start_y + spacing * 3, "tworcy.png", width=btn_width)
+    # Proporcjonalny przycisk wyjścia
+    btn_exit = ImageButton(WIDTH // 2 - 110, start_y + spacing * 4, "wyjście.png", width=220)
 
     buttons = [btn_play, btn_scores, btn_options, btn_credits, btn_exit]
-    
-    welcome_font = pygame.font.SysFont("arial", 40)
-    welcome_surf = welcome_font.render(f"Zalogowano jako: {player_name}", True, (150, 200, 255))
 
     while True:
         if background_image:
@@ -89,52 +87,32 @@ def main_menu(player_name, net, background_image):
         draw_text('GRA STATKI', font_title, TEXT_COLOR, screen, WIDTH // 2, 200)
 
         # Powitanie zalogowanego gracza w menu
+        welcome_surf = pygame.font.SysFont("arial", 40).render(f"Zalogowano jako: {player_name}", True, (150, 200, 255))
         screen.blit(welcome_surf, (20, 20))
 
         mouse_pos = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                pygame.quit(); sys.exit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+                    pygame.quit(); sys.exit()
 
             if btn_play.handle_event(event):
-                # --- ZMIANA: Skaczemy od razu do matchmakingu, bo logowanie było na starcie! ---
                 match_choice = game.matchmaking_menu(screen, background_image)
                 if match_choice:
                     try:
-                        # Wysyłamy wybrany tryb (Szybka Gra, Stwórz Pokój, Dołącz)
                         response = net.send(match_choice)
-
-                        # Przechodzimy do logiki oczekiwania
                         if response and response.get("status") in ["waiting", "room_created"]:
                             r_code = response.get("room_code")
                             msg = "Szukanie przeciwnika..." if not r_code else "Oczekiwanie na znajomego..."
-
                             opponent = game.waiting_screen(screen, background_image, net, msg, r_code)
                             if opponent:
-                                # Gra wystartowała!
-                                status = game.play_game(screen, player_name, opponent, net, background_image)
-                                if status == "MENU":
-                                    print("Rozgrywka zakończona, powrót do menu.")
-                            else:
-                                print("Wrócono do menu lub przeciwnik uciekł.")
-
+                                game.play_game(screen, player_name, opponent, net, background_image)
                         elif response and response.get("status") == "game_start":
-                            # Znaleziono od razu (dołączono do kogoś)
-                            status = game.play_game(screen, player_name, response.get("opponent"), net, background_image)
-                            if status == "MENU":
-                                print("Rozgrywka zakończona, powrót do menu.")
-                        elif response:
-                            print(f"Błąd dołączania: {response.get('message', 'Nieznany błąd')}")
-                        else:
-                            print("Błąd sieci: Brak odpowiedzi od serwera.")
-
+                            game.play_game(screen, player_name, response.get("opponent"), net, background_image)
                     except Exception as e:
                         print(f"Błąd sieci: {e}")
 
@@ -145,8 +123,7 @@ def main_menu(player_name, net, background_image):
             if btn_credits.handle_event(event):
                 show_credits(screen, clock, background_image)
             if btn_exit.handle_event(event):
-                pygame.quit()
-                sys.exit()
+                pygame.quit(); sys.exit()
 
         for btn in buttons:
             btn.check_hover(mouse_pos)
@@ -157,24 +134,18 @@ def main_menu(player_name, net, background_image):
 
 
 if __name__ == "__main__":
-    # --- NOWE FLOW APLIKACJI NA START ---
     try:
-        global_net = Network()  # Połączenie nawiązywane tylko raz przy starcie
+        global_net = Network()
     except Exception as e:
-        print("Nie można połączyć z serwerem. Upewnij się, że serwer jest uruchomiony.")
+        print("Nie można połączyć z serwerem.")
         sys.exit()
 
-    # Załadowanie tła raz na początku
     try:
         background_image_raw = pygame.image.load(BACKGROUND_IMAGE_FILENAME).convert()
         background_image = pygame.transform.scale(background_image_raw, (WIDTH, HEIGHT))
-    except pygame.error as e:
-        print(f"Nie można załadować obrazu tła: {e}")
+    except:
         background_image = None
 
-    # Wywołanie ekranu autoryzacji z przekazaniem połączenia sieciowego i tła
     logged_player = show_auth_screen(screen, clock, global_net, background_image)
-
-    # Jeśli gracz pomyślnie się zalogował, wchodzi do Menu Głównego
     if logged_player:
         main_menu(logged_player, global_net, background_image)

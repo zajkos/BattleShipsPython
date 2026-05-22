@@ -1,7 +1,7 @@
 import pygame
 import sys
 from settings import *
-from button import Button
+from button import Button, ImageButton
 import options
 
 
@@ -28,7 +28,7 @@ def show_credits(screen, clock, background=None):
 
     # Ustawienia przycisku "Powrót"
     btn_width, btn_height = 250, 60
-    btn_back = Button(WIDTH // 2 - btn_width // 2, HEIGHT - 100, btn_width, btn_height, "Powrót", font_text)
+    btn_back = ImageButton(WIDTH // 2 - btn_width // 2, HEIGHT - 100, "powrót.png", width=btn_width)
 
     # Zmienna odpowiedzialna za pozycję Y tekstu (zaczyna pod dolną krawędzią ekranu)
     text_y_start = HEIGHT
