@@ -985,7 +985,6 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
                     if is_hit:
                         play_sfx('hit')
                         if is_sunk:
-                            play_sfx('win') # Możesz zmienić na specyficzny dźwięk zatopienia
                             if shooter == player_idx:
                                 for cx, cy in response.get("sunk_cells", []):
                                     enemy_sunk_ships_cells.add((cx, cy))
