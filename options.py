@@ -62,6 +62,10 @@ def show_options(screen, clock, background=None):
         screen.blit(vol_label, vol_label.get_rect(center=(WIDTH // 2, 210)))
 
         # Statusy (podpowiedzi tekstowe obok przycisków lub wewnątrz)
+        btn_sfx.text = f"Dźwięki: {'WŁ.' if sfx_enabled else 'WYŁ.'}"
+        btn_toggle_exp.text = f"Wybuchy: {'WŁ.' if explosions_enabled else 'WYŁ.'}"
+        btn_toggle_spl.text = f"Pluski: {'WŁ.' if splash_enabled else 'WYŁ.'}"
+        btn_toggle_smo.text = f"Dym: {'WŁ.' if smoke_enabled else 'WYŁ.'}"
         btn_fps.text = "FPS: " + (fps_labels[fps_index] if fps_labels[fps_index] != "MAX" else "BEZ LIMITU")
         
         for event in pygame.event.get():

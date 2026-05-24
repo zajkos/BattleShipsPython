@@ -105,14 +105,14 @@ def matchmaking_menu(screen, background):
     font_title = pygame.font.SysFont("arial", 80, bold=True)
     clock = pygame.time.Clock()
 
-    btn_w = 320
+    btn_w = 300
     start_x = WIDTH // 2 - btn_w // 2
     start_y = 350
-    spacing = 110
+    spacing = 200
 
     btn_random = ImageButton(start_x, start_y, "szybka gra.png", width=btn_w)
     btn_create = ImageButton(start_x, start_y + spacing, "stwórz pokój.png", width=btn_w)
-    btn_join = ImageButton(start_x, start_y + spacing * 2, "dołącz do pokoju.png", width=btn_w)
+    btn_join = ImageButton(start_x, start_y + spacing * 1.8, "dołącz do pokoju.png", width=btn_w)
     btn_back = ImageButton(WIDTH // 2 - 110, start_y + spacing * 3, "powrót.png", width=220)
 
     buttons = [btn_random, btn_create, btn_join, btn_back]
@@ -253,16 +253,13 @@ def waiting_screen(screen, background, net, status_message, room_code=None):
 
         # Odbieranie danych z serwera (nieblokująco)
         try:
-            data = net.client.recv(2048).decode()
-            if data:
-                response = json.loads(data)
+            response = net.recv()
+            if response:
                 if response.get("status") == "game_start":
                     net.client.setblocking(True)  # Przywracamy blokowanie na czas gry
                     return response.get("opponent")
                 elif response.get("status") == "opponent_disconnected":
                     return None  # Przeciwnik uciekł
-        except BlockingIOError:
-            pass  # Brak nowych wiadomości, pętla leci dalej
         except Exception as e:
             print(f"Błąd sieci: {e}")
             return None
@@ -451,9 +448,9 @@ def play_game(screen, p1_name, p2_name, net, background=None):
     spacing_btn = 290
     btn_start_x = ship_tray_rect.x + (ship_tray_rect.width - (bw * 3 + 40)) // 2 + 130
     
-    btn_random = ImageButton(ship_tray_rect.centerx - 410, ship_tray_rect.bottom - 100, "losuj.png", width=bw)
-    btn_clear = ImageButton(ship_tray_rect.centerx - 130, ship_tray_rect.bottom - 100, "wyczyść.png", width=bw)
-    btn_ready = ImageButton(ship_tray_rect.centerx + 150, ship_tray_rect.bottom - 100, "S T A R T.png", width=bw)
+    btn_random = ImageButton(ship_tray_rect.centerx - 410, ship_tray_rect.bottom - 150, "losuj.png", width=bw)
+    btn_clear = ImageButton(ship_tray_rect.centerx - 130, ship_tray_rect.bottom - 150, "wyczyść.png", width=bw)
+    btn_ready = ImageButton(ship_tray_rect.centerx + 150, ship_tray_rect.bottom - 150, "S T A R T.png", width=bw)
     title_font = pygame.font.SysFont("arial", 50, bold=True)
 
     last_waiting_status = None
@@ -518,6 +515,9 @@ def play_game(screen, p1_name, p2_name, net, background=None):
                     board_data = []
                     for s in placed_ships:
                         board_data.append({
+                            "length": s.length,
+                            "horizontal": s.horizontal,
+                            "grid_pos": s.grid_pos,
                             "cells": s.get_grid_cells(s.grid_pos[0], s.grid_pos[1])
                         })
                     if net:
@@ -617,40 +617,19 @@ def play_game(screen, p1_name, p2_name, net, background=None):
         # Odbieranie sygnałów od serwera w trakcie oczekiwania
         if waiting_for_opponent and net:
             try:
-                data = net.client.recv(2048).decode()
-                if data:
-                    net_buffer += data
-                    
-                    # Parsowanie wszystkich kompletnych obiektów JSON z bufora
-                    while "}" in net_buffer:
-                        # Szukamy pierwszego zamykającego nawiasu i odpowiadającego mu otwierającego
-                        end_idx = net_buffer.find("}") + 1
-                        start_idx = net_buffer.rfind("{", 0, end_idx)
-                        
-                        if start_idx != -1:
-                            json_str = net_buffer[start_idx:end_idx]
-                            try:
-                                response = json.loads(json_str)
-                                # Usuwamy przetworzony fragment z bufora
-                                net_buffer = net_buffer[end_idx:]
-                                
-                                if response.get("status") == "battle_start":
-                                    print("Faza bitwy uruchomiona!")
-                                    p_idx = response.get("your_idx", 0)
-                                    start_turn = response.get("starting_turn", 0)
-                                    return battle_phase(screen, p1_name, p2_name, net, p_idx, start_turn, placed_ships, background)
-                                elif response.get("status") == "opponent_disconnected":
-                                    print("Przeciwnik rozłączony w trakcie oczekiwania.")
-                                    if net: net.client.setblocking(True)
-                                    return None
-                            except json.JSONDecodeError:
-                                # Może być zagnieżdżony JSON, czekamy na więcej danych
-                                break
-                        else:
-                            # Oczyszczanie bufora z błędnych danych
-                            net_buffer = net_buffer[end_idx:]
-            except BlockingIOError:
-                pass
+                response = net.recv()
+                if response:
+                    if response.get("status") == "battle_start":
+                        print("Faza bitwy uruchomiona!")
+                        p_idx = response.get("your_idx", 0)
+                        start_turn = response.get("starting_turn", 0)
+                        epoch = response.get("match_epoch", 0)
+                        return battle_phase(screen, p1_name, p2_name, net, p_idx, start_turn, placed_ships, background, epoch)
+
+                    elif response.get("status") == "opponent_disconnected":
+                        print("Przeciwnik rozłączony w trakcie oczekiwania.")
+                        if net: net.client.setblocking(True)
+                        return None
             except Exception as e:
                 print(f"Błąd sieci podczas oczekiwania: {e}")
 
@@ -667,24 +646,22 @@ def play_game(screen, p1_name, p2_name, net, background=None):
         clock.tick(options.current_fps)
 
 
-def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fleet, background=None):
+def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fleet, background=None, match_epoch=0, initial_state=None):
     """Główny ekran bitwy. Rysuje dwie plansze, własną flotę i zarządza turami."""
     # Próba załadowania specyficznego tła dla fazy bitwy
-    is_custom_bg = False
     try:
         battle_bg_raw = pygame.image.load("plansza.png").convert()
         battle_bg = pygame.transform.scale(battle_bg_raw, (WIDTH, HEIGHT))
-        is_custom_bg = True
     except Exception as e:
         print(f"Nie można załadować plansza.png: {e}")
         battle_bg = background
 
     font_title = pygame.font.SysFont("arial", 60, bold=True)
-    font_ui = pygame.font.SysFont("arial", 40)
     font_score = pygame.font.SysFont("arial", 30)
+    font_ui = pygame.font.SysFont("arial", 40)
     clock = pygame.time.Clock()
 
-    # Nowe wymiary i pozycje dopasowane do plansza.png (Etap 4: +20px prawo, +5px dół)
+    # Nowe wymiary i pozycje dopasowane do plansza.png
     cell_size = 68
     grid_size = cell_size * 10
     my_grid_x, my_grid_y = 180 + 30, 240 + 20
@@ -699,6 +676,26 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
 
     my_score = 0
     enemy_score = 0
+    
+    enemy_sunk_ships_cells = set()
+
+    # Odtwarzanie stanu po reconnect
+    if initial_state:
+        my_score = initial_state.get("scores", [0, 0])[player_idx]
+        enemy_score = initial_state.get("scores", [0, 0])[1 - player_idx]
+        
+        # Odtwarzanie trafień (zakładamy że serwer wysłał listę trafień na plansze przeciwnika i własną)
+        # W nowej wersji serwera: hits[0] to trafienia gracza 0, hits[1] to trafienia gracza 1
+        all_hits = initial_state.get("hits", [[], []])
+        my_hits_on_enemy = all_hits[1 - player_idx] # To co JA trafiłem u NIEGO
+        enemy_hits_on_me = all_hits[player_idx] # To co ON trafił u MNIE
+        
+        # Tutaj mamy problem: serwer wysyła TYLKO trafienia (hit), nie pudła (miss)
+        # Na razie odtworzymy tylko trafienia.
+        for x, y in my_hits_on_enemy:
+            my_shots_hit.add((x, y))
+        for x, y in enemy_hits_on_me:
+            enemy_shots_hit.add((x, y))
 
     net.client.setblocking(False)
 
@@ -725,8 +722,9 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
     res_rect = None
     score_surf = None
     score_rect = None
-    btn_back_to_menu = ImageButton(WIDTH // 2 - 110, HEIGHT // 2 + 180, "powrot do menu.png", width=220)
-    btn_rematch = ImageButton(WIDTH // 2 - 160, HEIGHT // 2 + 70, "RWEANŻ.png", width=320)
+    btn_rematch = ImageButton(WIDTH // 2 - 160, HEIGHT // 2 + 50, "RWEANŻ.png", width=320)
+    btn_back_to_menu = ImageButton(WIDTH // 2 - 110, HEIGHT // 2 + 230, "powrot do menu.png", width=220)
+
     rematch_requested = False
     opponent_requested_rematch = False
 
@@ -767,20 +765,20 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
     is_paused = False
     pause_overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
     pause_overlay.fill((0, 0, 0, 150))
-    
+    current_match_epoch = match_epoch # Zainicjalizowane z battle_start
+
     btn_w = 320
     start_x = WIDTH // 2 - btn_w // 2
     start_y = HEIGHT // 2 - 150
-    spacing = 110
+    spacing = 150
     
     btn_pause_resume = ImageButton(start_x, start_y, "kontynuuj.png", width=btn_w)
     btn_pause_options = ImageButton(WIDTH // 2 - 140, start_y + spacing, "opcje.png", width=280)
-    btn_pause_quit = ImageButton(WIDTH // 2 - 110, start_y + spacing * 2, "wyjście.png", width=220)
-
-    net_buffer = ""
+    btn_pause_quit = ImageButton(WIDTH // 2 - 110, start_y + spacing * 1.8, "wyjście.png", width=220)
 
     while True:
         current_time_ms = pygame.time.get_ticks()
+        # ... (rest of the loop)
         # Jeśli pauza, czas się zatrzymuje (wizualnie)
         if not is_paused and not game_over:
             time_left = max(0, (turn_limit - (current_time_ms - turn_start_time)) // 1000)
@@ -969,114 +967,99 @@ def battle_phase(screen, p1_name, p2_name, net, player_idx, initial_turn, my_fle
                         net.send_no_wait({"action": "shoot", "x": click_x, "y": click_y})
 
         try:
-            data = net.client.recv(2048).decode()
-            if data:
-                net_buffer += data
-                
-                while "}" in net_buffer:
-                    end_idx = net_buffer.find("}") + 1
-                    start_idx = net_buffer.rfind("{", 0, end_idx)
-                    
-                    if start_idx != -1:
-                        json_str = net_buffer[start_idx:end_idx]
-                        try:
-                            response = json.loads(json_str)
-                            net_buffer = net_buffer[end_idx:]
+            response = net.recv()
+            if response:
+                if response.get("status") == "chat_message":
+                    sender = response.get("sender", "Gracz")
+                    text = response.get("message", "")
+                    chat_log.append(f"{sender}: {text}")
 
-                            if response.get("status") == "chat_message":
-                                sender = response.get("sender", "Gracz")
-                                text = response.get("message", "")
-                                chat_log.append(f"{sender}: {text}")
+                elif response.get("status") == "shot_result":
+                    sx, sy = response["x"], response["y"]
+                    is_hit = response["hit"]
+                    is_sunk = response.get("sunk", False)
+                    shooter = response["shooter"]
+                    current_turn = response["next_turn"]
+                    turn_start_time = pygame.time.get_ticks()
 
-                            elif response.get("status") == "shot_result":
-                                sx, sy = response["x"], response["y"]
-                                is_hit = response["hit"]
-                                is_sunk = response.get("sunk", False)
-                                shooter = response["shooter"]
-                                current_turn = response["next_turn"]
-                                turn_start_time = pygame.time.get_ticks()
-
-                                if is_hit:
-                                    play_sfx('hit')
-                                    if is_sunk:
-                                        play_sfx('win') # Możesz zmienić na specyficzny dźwięk zatopienia
-                                        if shooter == player_idx:
-                                            for cx, cy in response.get("sunk_cells", []):
-                                                enemy_sunk_ships_cells.add((cx, cy))
-                                else:
-                                    play_sfx('miss')
-
-                                if shooter == player_idx:
-                                    ax = enemy_grid_x + sx * cell_size + cell_size // 2
-                                    ay = enemy_grid_y + sy * cell_size + cell_size // 2
-                                else:
-                                    ax = my_grid_x + sx * cell_size + cell_size // 2
-                                    ay = my_grid_y + sy * cell_size + cell_size // 2
-
-                                # Spawnowanie animacji zależnie od ustawień w options.py
-                                if is_hit and options.explosions_enabled:
-                                    active_animations.append(AnimationEffect(ax, ay, explosion_frames))
-                                elif not is_hit and options.splash_enabled:
-                                    active_animations.append(AnimationEffect(ax, ay, splash_frames))
-
-                                if is_hit:
-                                    if options.smoke_enabled:
-                                        persistent_effects.append(AnimationEffect(ax, ay, smoke_frames, speed=0.4, loop=True))
-                                    shake_amount = 10
-                                    shake_timer = 15
-                                elif not is_hit and shooter != player_idx:
-                                    shake_amount = 3
-                                    shake_timer = 8
-
-                                if shooter == player_idx:
-                                    if is_hit:
-                                        my_shots_hit.add((sx, sy))
-                                    else:
-                                        my_shots_miss.add((sx, sy))
-                                else:
-                                    if is_hit:
-                                        enemy_shots_hit.add((sx, sy))
-                                    else:
-                                        enemy_shots_miss.add((sx, sy))
-
-                                if "scores" in response:
-                                    new_scores = response["scores"]
-                                    my_score = new_scores[player_idx]
-                                    enemy_score = new_scores[1 - player_idx]
-
-                            elif response.get("status") == "turn_timeout":
-                                current_turn = response["next_turn"]
-                                turn_start_time = pygame.time.get_ticks()
-                                chat_log.append("SYSTEM: Czas minął! Zmiana tury.")
-
-                            elif response.get("status") == "game_over":
-                                game_over = True
-                                winner_name = response.get("winner")
-                                if "final_scores" in response:
-                                    f_scores = response["final_scores"]
-                                    my_score = f_scores[player_idx]
-                                    enemy_score = f_scores[1 - player_idx]
-                                # Wyświetlamy opcjonalną wiadomość systemową (np. o poddaniu się)
-                                if response.get("message"):
-                                    chat_log.append(f"SYSTEM: {response.get('message')}")
-
-                            elif response.get("status") == "rematch_requested":
-                                opponent_requested_rematch = True
-                                chat_log.append("SYSTEM: Przeciwnik prosi o rewanż!")
-
-                            elif response.get("status") == "rematch_start":
-                                chat_log.append("SYSTEM: Rozpoczynanie rewanżu!")
-                                net.client.setblocking(True)
-                                return play_game(screen, p1_name, p2_name, net, background)
-
-                            elif response.get("status") == "opponent_disconnected":
-                                net.client.setblocking(True)
-                                return "MENU"
-                        except json.JSONDecodeError:
-                            break
+                    if is_hit:
+                        play_sfx('hit')
+                        if is_sunk:
+                            play_sfx('win') # Możesz zmienić na specyficzny dźwięk zatopienia
+                            if shooter == player_idx:
+                                for cx, cy in response.get("sunk_cells", []):
+                                    enemy_sunk_ships_cells.add((cx, cy))
                     else:
-                        net_buffer = net_buffer[end_idx:]
-        except BlockingIOError:
+                        play_sfx('miss')
+
+                    if shooter == player_idx:
+                        ax = enemy_grid_x + sx * cell_size + cell_size // 2
+                        ay = enemy_grid_y + sy * cell_size + cell_size // 2
+                    else:
+                        ax = my_grid_x + sx * cell_size + cell_size // 2
+                        ay = my_grid_y + sy * cell_size + cell_size // 2
+
+                    # Spawnowanie animacji zależnie od ustawień w options.py
+                    if is_hit and options.explosions_enabled:
+                        active_animations.append(AnimationEffect(ax, ay, explosion_frames))
+                    elif not is_hit and options.splash_enabled:
+                        active_animations.append(AnimationEffect(ax, ay, splash_frames))
+
+                    if is_hit:
+                        if options.smoke_enabled:
+                            persistent_effects.append(AnimationEffect(ax, ay, smoke_frames, speed=0.4, loop=True))
+                        shake_amount = 10
+                        shake_timer = 15
+                    elif not is_hit and shooter != player_idx:
+                        shake_amount = 3
+                        shake_timer = 8
+
+                    if shooter == player_idx:
+                        if is_hit:
+                            my_shots_hit.add((sx, sy))
+                        else:
+                            my_shots_miss.add((sx, sy))
+                    else:
+                        if is_hit:
+                            enemy_shots_hit.add((sx, sy))
+                        else:
+                            enemy_shots_miss.add((sx, sy))
+
+                    if "scores" in response:
+                        new_scores = response["scores"]
+                        my_score = new_scores[player_idx]
+                        enemy_score = new_scores[1 - player_idx]
+
+                elif response.get("status") == "turn_timeout":
+                    current_turn = response["next_turn"]
+                    turn_start_time = pygame.time.get_ticks()
+                    chat_log.append("SYSTEM: Czas minął! Zmiana tury.")
+
+                elif response.get("status") == "game_over":
+                    game_over = True
+                    winner_name = response.get("winner")
+                    if "final_scores" in response:
+                        f_scores = response["final_scores"]
+                        my_score = f_scores[player_idx]
+                        enemy_score = f_scores[1 - player_idx]
+                    # Wyświetlamy opcjonalną wiadomość systemową (np. o poddaniu się)
+                    if response.get("message"):
+                        chat_log.append(f"SYSTEM: {response.get('message')}")
+
+                elif response.get("status") == "rematch_requested":
+                    opponent_requested_rematch = True
+                    chat_log.append("SYSTEM: Przeciwnik prosi o rewanż!")
+
+                elif response.get("status") == "rematch_start":
+                    chat_log.append("SYSTEM: Rozpoczynanie rewanżu!")
+                    net.client.setblocking(True)
+                    return play_game(screen, p1_name, p2_name, net, background)
+
+                elif response.get("status") == "opponent_disconnected":
+                    chat_log.append(f"SYSTEM: {response.get('message', 'Przeciwnik rozłączony!')}")
+
+        except Exception as e:
+            # print(f"Błąd sieci: {e}")
             pass
 
         for effect in persistent_effects:

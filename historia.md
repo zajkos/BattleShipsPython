@@ -123,14 +123,4 @@
 - **Aktualizacja Dokumentacji**:
     - Dodano wpis o konfigurowalnych animacjach do `Funkcjonalnosci.md`.
 
-## [2026-05-22] Pełne Przywrócenie Oryginalnej Estetyki
-- **Całkowity Revert Graficzny**:
-    - Usunięto wszystkie panele "Glass Card", suwaki i strzałki wyboru z menu głównego, logowania oraz opcji.
-    - Przywrócono oryginalne przyciski graficzne (`ImageButton`) tam, gdzie były pierwotnie (Logowanie, Rejestracja, Wyjście w menu głównym).
-    - Przywrócono tekstowe przyciski (`Button`) dla pozostałych opcji menu głównego (Graj, Top Wyniki, Opcje, Twórcy) oraz dla całego menu Opcji.
-    - Przywrócono oryginalne kolory pól `InputBox` (`lightskyblue3`, `dodgerblue2`) i prosty sposób rysowania obramowań.
-- **Zachowanie Stabilności i Funkcji**:
-    - Mimo powrotu do starego wyglądu, zachowano: profesjonalny bufor sieciowy, system rewanżów, logikę walkowerów, limit FPS (obsługiwany teraz jednym przyciskiem cyklicznym) oraz przełączniki animacji.
-- **Aktualizacja Dokumentacji**:
-    - `Funkcjonalnosci.md` pozostaje aktualny – gra posiada wszystkie nowe funkcje, ale w oprawie graficznej zgodnej z oryginalną wizją użytkownika.
- Applied fuzzy match at line 181-190.
+Applied fuzzy match at line 126-136.

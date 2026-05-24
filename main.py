@@ -71,12 +71,23 @@ def main_menu(player_name, net, background_image):
 
     btn_play = ImageButton(start_x, start_y, "graj.png", width=btn_width)
     btn_scores = ImageButton(start_x, start_y + spacing, "top wyniki.png", width=btn_width)
-    btn_options = ImageButton(WIDTH // 2 - 140, start_y + spacing * 2, "opcje.png", width=280)
+    btn_options = ImageButton(WIDTH // 2 - 310 // 2, start_y + spacing * 2.2, "opcje.png", width=310, height=95)
     btn_credits = ImageButton(start_x, start_y + spacing * 3, "tworcy.png", width=btn_width)
     # Proporcjonalny przycisk wyjścia
-    btn_exit = ImageButton(WIDTH // 2 - 110, start_y + spacing * 4, "wyjście.png", width=220)
+    btn_exit = ImageButton(WIDTH // 2 - 110, start_y + spacing * 4.3, "wyjście.png", width=220)
 
     buttons = [btn_play, btn_scores, btn_options, btn_credits, btn_exit]
+
+    # Ładowanie loga PNG zamiast tekstu
+    try:
+        title_img = pygame.image.load("Gra Statki.png").convert_alpha()
+        target_width = 700
+        ratio = target_width / title_img.get_width()
+        title_img = pygame.transform.smoothscale(title_img, (target_width, int(title_img.get_height() * ratio)))
+        title_rect = title_img.get_rect(center=(WIDTH // 2, 200))
+    except Exception as e:
+        print(f"Błąd ładowania logo: {e}")
+        title_img = None
 
     while True:
         if background_image:
@@ -84,7 +95,10 @@ def main_menu(player_name, net, background_image):
         else:
             screen.fill(BG_COLOR)
 
-        draw_text('GRA STATKI', font_title, TEXT_COLOR, screen, WIDTH // 2, 200)
+        if title_img:
+            screen.blit(title_img, title_rect)
+        else:
+            draw_text('GRA STATKI', font_title, TEXT_COLOR, screen, WIDTH // 2, 200)
 
         # Powitanie zalogowanego gracza w menu
         welcome_surf = pygame.font.SysFont("arial", 40).render(f"Zalogowano jako: {player_name}", True, (150, 200, 255))
@@ -146,6 +160,11 @@ if __name__ == "__main__":
     except:
         background_image = None
 
-    logged_player = show_auth_screen(screen, clock, global_net, background_image)
-    if logged_player:
-        main_menu(logged_player, global_net, background_image)
+    logged_player_data = show_auth_screen(screen, clock, global_net, background_image)
+    if logged_player_data:
+        player_name, response = logged_player_data
+        if response.get("status") == "reconnected":
+            # Gracz wrócił do gry
+            game.play_game(screen, player_name, response.get("opponent"), global_net, background_image, reconnect_data=response)
+        else:
+            main_menu(player_name, global_net, background_image)

@@ -133,10 +133,12 @@ def show_auth_screen(screen, clock, net, background=None):
                     message, message_color = "Wypełnij oba pola!", (200, 50, 50)
                 else:
                     response = net.send({"action": "login", "username": input_login.text, "password": input_password.text})
-                    if response and response.get("status") == "success":
-                        return input_login.text
-                    else:
+                    if response and response.get("status") in ["success", "reconnected"]:
+                        return input_login.text, response
+                    elif response:
                         message, message_color = response.get("message", "Błąd logowania!"), (200, 50, 50)
+                    else:
+                        message, message_color = "Błąd: Brak połączenia z serwerem!", (200, 50, 50)
 
             if btn_register.handle_event(event):
                 if not input_login.text or not input_password.text:
@@ -145,8 +147,10 @@ def show_auth_screen(screen, clock, net, background=None):
                     response = net.send({"action": "register", "username": input_login.text, "password": input_password.text})
                     if response and response.get("status") == "success":
                         message, message_color = "Rejestracja udana!", (50, 205, 50)
+                    elif response:
+                        message, message_color = response.get("message", "Użytkownik już istnieje!"), (200, 50, 50)
                     else:
-                        message, message_color = "Użytkownik już istnieje!", (200, 50, 50)
+                        message, message_color = "Błąd: Brak połączenia z serwerem!", (200, 50, 50)
 
         input_login.draw(screen)
         input_password.draw(screen)
