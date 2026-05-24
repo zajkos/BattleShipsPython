@@ -5,7 +5,7 @@
 ### 1.1 Metryczka Projektu
 | Parametr | Specyfikacja Techniczna |
 | :--- | :--- |
-| **Tytuł Projektu** | BattleShips Online - Real-Time Turn-Based Multiplayer |
+| **Tytuł Projektu** | BattleShips |
 | **Gatunek** | Tactical Grid-Based Strategy |
 | **Model Sieciowy** | Authoritative Client-Server with SSL/TLS |
 | **System Operacyjny** | Windows (Windows Server / Windows 10+) |
