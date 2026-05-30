@@ -49,10 +49,6 @@ def init_audio():
         s = load_sound_safe(f)
         if s: sounds['miss'].append(s)
 
-    for f in ['win1.mp3', 'win2.mp3', 'win3.mp3', 'win4.mp3', 'win5.mp3']:
-        s = load_sound_safe(f)
-        if s: sounds['win'].append(s)
-
     # --- MUZYKA W TLE ---
     music_path = os.path.join(AUDIO_DIR, 'music.mp3')
     if os.path.exists(music_path):

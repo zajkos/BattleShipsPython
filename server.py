@@ -1,6 +1,13 @@
 import socket
 import threading
 import json
+import sys
+import os
+
+# Obsługa ścieżek dla PyInstallera
+if getattr(sys, 'frozen', False):
+    os.chdir(sys._MEIPASS)
+
 import psycopg2
 from psycopg2 import pool
 import os
@@ -26,8 +33,8 @@ logging.basicConfig(
 load_dotenv()
 
 # --- KONFIGURACJA SERWERA ---
-HOST = '127.0.0.1'
-PORT = 5555
+HOST = os.getenv("SERVER_HOST", '127.0.0.1')
+PORT = int(os.getenv("SERVER_PORT", 5555))
 USE_SSL = False # Ustaw na True i podaj ścieżki do certyfikatów, aby włączyć TLS
 
 # --- KONFIGURACJA BAZY DANYCH ---
@@ -55,6 +62,11 @@ waiting_random_player = None
 waiting_random_name = None
 waiting_random_id = None
 waiting_lock = threading.Lock()
+
+# --- LIMIT POŁĄCZEŃ ---
+MAX_CONNECTIONS = 100
+current_connections = 0
+connections_lock = threading.Lock()
 
 # --- CACHE RANKINGU ---
 high_scores_cache = {"data": [], "last_updated": 0}
@@ -109,7 +121,11 @@ def send_msg(conn, data):
     try:
         msg = json.dumps(data).encode('utf-8')
         length = struct.pack('!I', len(msg))
+        # Zabezpieczenie przed zablokowaniem całego serwera przez 1 gracza z pełnym buforem TCP
+        old_timeout = conn.gettimeout()
+        conn.settimeout(3.0)
         conn.sendall(length + msg)
+        conn.settimeout(old_timeout)
     except:
         pass
 
@@ -127,9 +143,12 @@ def recv_all(conn, n):
     """Pomocnicza funkcja do odbierania n bajtów."""
     data = bytearray()
     while len(data) < n:
-        packet = conn.recv(n - len(data))
-        if not packet: return None
-        data.extend(packet)
+        try:
+            packet = conn.recv(n - len(data))
+            if packet == b'': return None # Zapobieganie Hot-Loop 100% CPU
+            data.extend(packet)
+        except Exception:
+            return None
     return data
 
 def save_match_result(winner_id, loser_id, winner_score, loser_score):
@@ -160,9 +179,39 @@ def find_room_by_conn(conn):
     return None, None
 
 def handle_client(conn, addr):
-    global waiting_random_player, waiting_random_name, waiting_random_id
-    logging.info(f"Nowe połączenie: {addr}")
+    global waiting_random_player, waiting_random_name, waiting_random_id, current_connections
     
+    # 1. Sprawdzenie limitu połączeń
+    with connections_lock:
+        if current_connections >= MAX_CONNECTIONS:
+            logging.warning(f"Odrzucono połączenie od {addr}: Serwer pełny ({MAX_CONNECTIONS})")
+            send_msg(conn, {"status": "error", "message": "Serwer jest pełny. Spróbuj później."})
+            conn.close()
+            return
+        current_connections += 1
+
+    logging.info(f"Nowe połączenie: {addr} (Aktywne: {current_connections})")
+
+    # Konfiguracja TCP Keep-Alive do wykrywania brutalnie zerwanych połączeń (np. odpięcie kabla)
+    conn.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+    try:
+        # Windows: czas bezczynności 10s, interwał 3s
+        conn.ioctl(socket.SIO_KEEPALIVE_VALS, (1, 10000, 3000))
+    except Exception:
+        try:
+            # Linux fallback
+            conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 10)
+            conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 3)
+            conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 3)
+        except Exception:
+            pass
+            
+    # Wyłączenie algorytmu Nagle'a (TCP_NODELAY) - natychmiastowe wysyłanie małych pakietów (strzały, czat)
+    try:
+        conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    except Exception:
+        pass
+
     # Wyślij powitanie (wymagane przez Network.connect() w network.py)
     send_msg(conn, {"status": "success", "message": "Witaj na serwerze Statków!"})
 
@@ -176,6 +225,13 @@ def handle_client(conn, addr):
             if not request: break
             
             action = request.get("action")
+
+            # --- WERYFIKACJA SESJI (Security Fix) ---
+            if action not in ["register", "login"] and username is None:
+                logging.warning(f"Odrzucono nieautoryzowaną akcję '{action}' od {addr}")
+                send_msg(conn, {"status": "error", "message": "Brak autoryzacji. Zaloguj się najpierw."})
+                conn.close()
+                return
 
             if action == "register":
                 u, p = request.get("username"), request.get("password")
@@ -236,8 +292,10 @@ def handle_client(conn, addr):
                         "players": [{"conn": conn, "username": username, "db_id": current_db_user_id, "ready": False}],
                         "boards": [{}, {}],
                         "hits": [set(), set()],
+                        "misses": [set(), set()],
                         "scores": [0, 0],
                         "turn": 0,
+                        "game_over": False,
                         "is_private": True,
                         "rematch_votes": [False, False],
                         "match_epoch": int(time.time()),
@@ -303,11 +361,14 @@ def handle_client(conn, addr):
                 if room:
                     with rooms_lock:
                         p_idx = 0 if room["players"][0]["conn"] == conn else 1
+                        if room["players"][p_idx]["ready"]:
+                            continue  # Zapobieganie exploitowi double-ready
                         room["boards"][p_idx] = board
                         room["players"][p_idx]["ready"] = True
                         if all(p["ready"] for p in room["players"]):
                             room["turn"] = random.randint(0, 1)
                             room["last_action_time"] = time.time()
+                            # Race condition fix: powiadomienia o starcie mają priorytet przed logiką strzałów
                             for i, p in enumerate(room["players"]):
                                 send_msg(p["conn"], {
                                     "status": "battle_start",
@@ -325,10 +386,17 @@ def handle_client(conn, addr):
                 if room:
                     with rooms_lock:
                         p_idx = 0 if room["players"][0]["conn"] == conn else 1
-                        if room["turn"] == p_idx:
+                        if room["turn"] == p_idx and not room.get("game_over"):
                             opp_idx = 1 - p_idx
                             opp_board = room["boards"][opp_idx]
                             
+                            # Zabezpieczenie przed dublowaniem punktów w to samo pole
+                            if (x, y) in room["hits"][opp_idx] or (x, y) in room.get("misses", [set(), set()])[opp_idx]:
+                                continue
+
+                            if "misses" not in room:
+                                room["misses"] = [set(), set()]
+
                             hit = False
                             sunk = False
                             sunk_cells = []
@@ -357,6 +425,7 @@ def handle_client(conn, addr):
                                 room["scores"][p_idx] += points_gained if sunk else 50
                                 room["scores"][opp_idx] -= points_lost if sunk else 10
                             else:
+                                room["misses"][opp_idx].add((x, y))
                                 room["turn"] = opp_idx
                                 room["scores"][p_idx] -= 10
                             
@@ -378,15 +447,62 @@ def handle_client(conn, addr):
 
                             # Sprawdź koniec gry (18 trafień to suma segmentów: 4+3+3+2+2+1+1+1+1 = 18)
                             if len(room["hits"][opp_idx]) == 18:
+                                room["game_over"] = True
                                 winner = room["players"][p_idx]
                                 loser = room["players"][opp_idx]
-                                save_match_result(winner["db_id"], loser["db_id"], room["scores"][p_idx], room["scores"][opp_idx])
+                                w_id, l_id = winner["db_id"], loser["db_id"]
+                                w_score, l_score = room["scores"][p_idx], room["scores"][opp_idx]
+                                
                                 msg = {"status": "game_over", "winner": winner["username"], "final_scores": room["scores"]}
                                 send_msg(room["players"][0]["conn"], msg)
                                 send_msg(room["players"][1]["conn"], msg)
+                                
+                                # Zapis poza lockiem, aby nie mrozić serwera
+                                threading.Thread(target=save_match_result, args=(w_id, l_id, w_score, l_score), daemon=True).start()
+
+            elif action == "leave_room":
+                # Kiedy gracz wychodzi do menu
+                if not current_room_code:
+                    current_room_code, room = find_room_by_conn(conn)
+                else:
+                    with rooms_lock: room = rooms.get(current_room_code)
+                
+                if room:
+                    with rooms_lock:
+                        p_idx = 0 if room["players"][0]["conn"] == conn else 1
+                        opp_idx = 1 - p_idx
+                        
+                        if len(room["players"]) > opp_idx:
+                            opp = room["players"][opp_idx]
+                            if opp:
+                                send_msg(opp["conn"], {"status": "opponent_disconnected", "message": "Przeciwnik opuścił grę!"})
+                                
+                                # Jeśli uciekł w trakcie bitwy (obaj byli gotowi i nie było końca gry), rywal wygrywa walkowerem
+                                if not room.get("game_over") and all(p and p["ready"] for p in room["players"]):
+                                    room["game_over"] = True
+                                    winner = opp
+                                    loser = room["players"][p_idx]
+                                    threading.Thread(target=save_match_result, 
+                                                   args=(winner["db_id"], loser["db_id"], room["scores"][opp_idx], room["scores"][p_idx]), 
+                                                   daemon=True).start()
+                                    
+                        if current_room_code in rooms:
+                            del rooms[current_room_code]
+                            logging.info(f"Pokój {current_room_code} usunięty z pamięci (leave_room).")
+                current_room_code = None
+                
+                with waiting_lock:
+                    if waiting_random_player == conn:
+                        waiting_random_player = None
+                        waiting_random_name = None
+                        waiting_random_id = None
 
             elif action == "chat_message":
-                msg_text = request.get("message", "")[:100]
+                import re
+                raw_msg = request.get("message", "")[:100]
+                # Przepuszczamy małe/duże litery łacińskie, polskie, cyfry i podstawowe znaki (bez emoji)
+                msg_text = "".join(c for c in raw_msg if re.match(r'^[a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ \!\@\#\$\%\^\&\*\(\)\-\_\=\+\[\]\{\}\\\|\;\:\'\"\,\.\<\>\/\?]+$', c))
+                
                 if not current_room_code:
                     current_room_code, room = find_room_by_conn(conn)
                 else:
@@ -416,6 +532,8 @@ def handle_client(conn, addr):
                             room["turn"] = random.randint(0, 1)
                             room["scores"] = [0, 0]
                             room["hits"] = [set(), set()]
+                            room["misses"] = [set(), set()]
+                            room["game_over"] = False
                             room["boards"] = [{}, {}]
                             room["players"][0]["ready"] = False
                             room["players"][1]["ready"] = False
@@ -434,35 +552,101 @@ def handle_client(conn, addr):
                 
                 if room:
                     with rooms_lock:
+                        if room.get("game_over"):
+                            continue
+                            
                         p_idx = 0 if room["players"][0]["conn"] == conn else 1
                         opp_idx = 1 - p_idx
                         winner = room["players"][opp_idx]
+                        loser = room["players"][p_idx]
+                        
                         if winner:
+                            room["game_over"] = True
                             msg = {"status": "game_over", "winner": winner["username"], "final_scores": room["scores"]}
                             send_msg(room["players"][0]["conn"], {**msg, "message": "Koniec gry (poddanie)."})
                             send_msg(room["players"][1]["conn"], {**msg, "message": "Koniec gry (poddanie)."})
+                            
+                            # Zapis poza lockiem
+                            threading.Thread(target=save_match_result, 
+                                           args=(winner["db_id"], loser["db_id"], room["scores"][opp_idx], room["scores"][p_idx]), 
+                                           daemon=True).start()
 
     except Exception as e:
         logging.error(f"Błąd klienta {addr}: {e}")
     finally:
+        with connections_lock:
+            current_connections -= 1
+            
         with auth_lock:
             if current_db_user_id in logged_in_users: logged_in_users.remove(current_db_user_id)
+            
+        with waiting_lock:
+            if waiting_random_player == conn:
+                waiting_random_player = None
+                waiting_random_name = None
+                waiting_random_id = None
+                logging.info(f"Gracz {username} usunięty z kolejki wyszukiwania.")
+
         with rooms_lock:
             if current_room_code in rooms:
                 room = rooms[current_room_code]
                 for p in room["players"]:
                     if p and p["conn"] == conn:
-                        p["disconnected_at"] = time.time()
-                        logging.info(f"Gracz {username} rozłączony. Oczekiwanie 15s na powrót...")
+                        logging.info(f"Gracz {username} rozłączony. Natychmiastowe zamykanie pokoju {current_room_code}.")
                         
                         opp_idx = 1 if room["players"][0] == p else 0
-                        opp = room["players"][opp_idx]
-                        if opp and not opp.get("disconnected_at"):
-                            send_msg(opp["conn"], {"status": "opponent_disconnected", "message": "Przeciwnik rozłączony. Czekam 15s..."})
+                        if len(room["players"]) > opp_idx:
+                            opp = room["players"][opp_idx]
+                            if opp:
+                                send_msg(opp["conn"], {"status": "opponent_disconnected", "message": "Przeciwnik opuścił grę!"})
                         break
+                
+                # Natychmiastowe usunięcie pokoju po rozłączeniu któregokolwiek z graczy
+                del rooms[current_room_code]
+                logging.info(f"Pokój {current_room_code} usunięty z pamięci.")
         conn.close()
 
+def turn_timer_checker():
+    """Wątek sprawdzający czas tury oraz czyszczący stare, nieaktywne pokoje."""
+    last_cleanup_time = time.time()
+    while True:
+        time.sleep(1)
+        messages_to_send = []
+        current_time = time.time()
+        
+        with rooms_lock:
+            # 1. Automatyczny Garbage Collector dla pokoi (raz na minutę)
+            if current_time - last_cleanup_time > 60:
+                for code, room in list(rooms.items()):
+                    # Jeśli w pokoju nie było akcji od 10 minut - usuwamy go (zapobieganie wyciekom RAM)
+                    if current_time - room["last_action_time"] > 600:
+                        logging.info(f"Garbage Collector: Usuwanie porzuconego pokoju {code}")
+                        del rooms[code]
+                last_cleanup_time = current_time
+
+            # 2. Logika AFK Timeout (30 sekund na ruch)
+            for code, room in list(rooms.items()):
+                # Sprawdzenie czy gra się toczy (2 graczy i obaj gotowi)
+                if len(room["players"]) == 2 and all(p and p["ready"] for p in room["players"]):
+                    # Jeśli czas od ostatniej akcji > 30s
+                    if current_time - room["last_action_time"] > 30:
+                        room["turn"] = 1 - room["turn"]
+                        room["last_action_time"] = current_time
+                        timeout_msg = {
+                            "status": "turn_timeout",
+                            "next_turn": room["turn"]
+                        }
+                        for p in room["players"]:
+                            if p:
+                                messages_to_send.append((p["conn"], timeout_msg))
+                                
+        # Wysyłamy wiadomości poza blokadą słownika, aby nie blokować innych wątków
+        for conn, msg in messages_to_send:
+            send_msg(conn, msg)
+
 def start_server():
+    threading.Thread(target=turn_timer_checker, daemon=True).start()
+    
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind((HOST, PORT))

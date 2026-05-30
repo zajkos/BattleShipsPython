@@ -1,6 +1,7 @@
 import pygame
 import sys
 import re
+import hashlib
 from settings import *
 import options
 from button import Button, ImageButton
@@ -132,7 +133,8 @@ def show_auth_screen(screen, clock, net, background=None):
                 if not input_login.text or not input_password.text:
                     message, message_color = "Wypełnij oba pola!", (200, 50, 50)
                 else:
-                    response = net.send({"action": "login", "username": input_login.text, "password": input_password.text})
+                    hashed_pw = hashlib.sha256(input_password.text.encode('utf-8')).hexdigest()
+                    response = net.send({"action": "login", "username": input_login.text, "password": hashed_pw})
                     if response and response.get("status") in ["success", "reconnected"]:
                         return input_login.text, response
                     elif response:
@@ -143,8 +145,11 @@ def show_auth_screen(screen, clock, net, background=None):
             if btn_register.handle_event(event):
                 if not input_login.text or not input_password.text:
                     message, message_color = "Wypełnij oba pola!", (200, 50, 50)
+                elif len(input_password.text) < 8:
+                    message, message_color = "Hasło musi mieć min. 8 znaków!", (200, 50, 50)
                 else:
-                    response = net.send({"action": "register", "username": input_login.text, "password": input_password.text})
+                    hashed_pw = hashlib.sha256(input_password.text.encode('utf-8')).hexdigest()
+                    response = net.send({"action": "register", "username": input_login.text, "password": hashed_pw})
                     if response and response.get("status") == "success":
                         message, message_color = "Rejestracja udana!", (50, 205, 50)
                     elif response:

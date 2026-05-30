@@ -1,6 +1,12 @@
 # main.py
 import pygame
 import sys
+import os
+
+# Obsługa ścieżek dla PyInstallera
+if getattr(sys, 'frozen', False):
+    os.chdir(sys._MEIPASS)
+
 from settings import *
 from button import Button, ImageButton
 import game

@@ -1,24 +1,62 @@
 import pygame
 import sys
+import json
+import os
 from settings import *
 from button import Button, ImageButton
 
-current_volume = 0.5  # Głośność muzyki (0.0 do 1.0)
-sfx_enabled = True  # Czy efekty dźwiękowe są włączone
+SETTINGS_FILE = "settings_save.json"
 
-# Opcje animacji
+# Domyślne wartości
+current_volume = 0.5
+sfx_enabled = True
 explosions_enabled = True
 splash_enabled = True
 smoke_enabled = False
-
-# Limit FPS
 fps_limits = [30, 60, 120, 144, 240, 360, 1000]
 fps_labels = ["30", "60", "120", "144", "240", "360", "MAX"]
-fps_index = 5  # Domyślnie 360
+fps_index = 5  # 360
 current_fps = fps_limits[fps_index]
 
+def save_settings():
+    """Zapisuje aktualne ustawienia do pliku JSON."""
+    data = {
+        "volume": current_volume,
+        "sfx": sfx_enabled,
+        "explosions": explosions_enabled,
+        "splash": splash_enabled,
+        "smoke": smoke_enabled,
+        "fps_index": fps_index
+    }
+    try:
+        with open(SETTINGS_FILE, "w") as f:
+            json.dump(data, f)
+    except Exception as e:
+        print(f"Błąd zapisu ustawień: {e}")
+
+def load_settings():
+    """Wczytuje ustawienia z pliku JSON."""
+    global current_volume, sfx_enabled, explosions_enabled, splash_enabled, smoke_enabled, fps_index, current_fps
+    if os.path.exists(SETTINGS_FILE):
+        try:
+            with open(SETTINGS_FILE, "r") as f:
+                data = json.load(f)
+                current_volume = data.get("volume", 0.5)
+                sfx_enabled = data.get("sfx", True)
+                explosions_enabled = data.get("explosions", True)
+                splash_enabled = data.get("splash", True)
+                smoke_enabled = data.get("smoke", False)
+                fps_index = data.get("fps_index", 5)
+                if fps_index >= len(fps_limits): fps_index = 1
+                current_fps = fps_limits[fps_index]
+        except Exception as e:
+            print(f"Błąd wczytywania ustawień: {e}")
+
+# Wczytaj ustawienia przy starcie modułu
+load_settings()
 
 def show_options(screen, clock, background=None):
+
     global current_volume, sfx_enabled, explosions_enabled, splash_enabled, smoke_enabled, fps_index, current_fps
 
     font_header = pygame.font.SysFont("arial", 80, bold=True)
